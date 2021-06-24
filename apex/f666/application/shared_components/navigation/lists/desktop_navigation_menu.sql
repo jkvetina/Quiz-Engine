@@ -35,6 +35,14 @@ wwv_flow_api.create_list_item(
 ,p_parent_list_item_id=>wwv_flow_api.id(123685438105713450)
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
+wwv_flow_api.create_list_item(
+ p_id=>wwv_flow_api.id(143400381429727312)
+,p_list_item_display_sequence=>30
+,p_list_item_link_text=>'Management'
+,p_list_item_link_target=>'f?p=&APP_ID.:210:&SESSION.::&DEBUG.::::'
+,p_parent_list_item_id=>wwv_flow_api.id(123685438105713450)
+,p_list_item_current_type=>'TARGET_PAGE'
+);
 wwv_flow_api.component_end;
 end;
 /
