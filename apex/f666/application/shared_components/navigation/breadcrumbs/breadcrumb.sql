@@ -15,12 +15,6 @@ wwv_flow_api.create_menu(
  p_id=>wwv_flow_api.id(123535461692712862)
 ,p_name=>'Breadcrumb'
 );
-wwv_flow_api.create_menu_option(
- p_id=>wwv_flow_api.id(123535666808712864)
-,p_short_name=>'Home'
-,p_link=>'f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.'
-,p_page_id=>1
-);
 wwv_flow_api.component_end;
 end;
 /

@@ -97,7 +97,7 @@ prompt --install
 @@application/user_interfaces.sql
 @@application/user_interfaces/combined_files.sql
 @@application/pages/page_00000.sql
-@@application/pages/page_00001.sql
+@@application/pages/page_00100.sql
 @@application/pages/page_00110.sql
 @@application/pages/page_00120.sql
 @@application/pages/page_09999.sql
