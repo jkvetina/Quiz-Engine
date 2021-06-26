@@ -33,7 +33,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             WHERE t.test_id         = apex.get_item('$TEST_ID')
         ) LOOP
             apex.set_item('$TEST_NAME',     c.test_name);
-            apex.set_item('$TEST_GROUP',    c.test_group);
+            apex.set_item('$TEST_GROUP',    c.test_topic);
         END LOOP;
         --
         FOR c IN (
