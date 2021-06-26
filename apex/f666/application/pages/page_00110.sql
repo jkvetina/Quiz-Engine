@@ -45,10 +45,14 @@ wwv_flow_api.create_page(
 '.a-CardView-subContent {',
 '  text-align      : right;',
 '}',
+'',
+'.bold {',
+'  font-weight     : bold;',
+'}',
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210626120248'
+,p_last_upd_yyyymmddhh24miss=>'20210626145056'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(119237602062121148)
@@ -125,7 +129,11 @@ wwv_flow_api.create_page_plug(
 ,p_plug_display_point=>'BODY'
 ,p_query_type=>'SQL'
 ,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT q.*',
+'SELECT',
+'    q.*,',
+'    CASE WHEN q.question_id = apex.get_item(''$QUESTION_ID'')',
+'        THEN ''bold''',
+'        END AS css_class',
 'FROM quiz_questions q',
 'JOIN quiz_attempts t',
 '    ON t.user_id        = sess.get_user_id()',
@@ -152,6 +160,7 @@ wwv_flow_api.create_card(
 ,p_body_adv_formatting=>false
 ,p_second_body_adv_formatting=>false
 ,p_second_body_column_name=>'QUESTION_ID'
+,p_second_body_css_classes=>'&CSS_CLASS.'
 ,p_media_adv_formatting=>false
 ,p_pk1_column_name=>'TEST_ID'
 ,p_pk2_column_name=>'QUESTION_ID'
@@ -189,7 +198,11 @@ wwv_flow_api.create_page_plug(
 ,p_plug_display_point=>'BODY'
 ,p_query_type=>'SQL'
 ,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT q.*',
+'SELECT',
+'    q.*,',
+'    CASE WHEN q.question_id = apex.get_item(''$QUESTION_ID'')',
+'        THEN ''bold''',
+'        END AS css_class',
 'FROM quiz_questions q',
 'WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
 '    AND q.question_id   NOT IN (',
@@ -221,6 +234,7 @@ wwv_flow_api.create_card(
 ,p_body_adv_formatting=>false
 ,p_second_body_adv_formatting=>false
 ,p_second_body_column_name=>'QUESTION_ID'
+,p_second_body_css_classes=>'&CSS_CLASS.'
 ,p_media_adv_formatting=>false
 ,p_pk1_column_name=>'TEST_ID'
 ,p_pk2_column_name=>'QUESTION_ID'

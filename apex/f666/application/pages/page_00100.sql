@@ -19,9 +19,13 @@ wwv_flow_api.create_page(
 ,p_step_title=>'Home'
 ,p_autocomplete_on_off=>'OFF'
 ,p_group_id=>wwv_flow_api.id(142404407822658913)
+,p_inline_css=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'.bold {',
+'  font-weight: bold;',
+'}'))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210626135717'
+,p_last_upd_yyyymmddhh24miss=>'20210626145459'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(143432731519904421)
@@ -66,7 +70,11 @@ wwv_flow_api.create_page_plug(
 '    t.topic_name            AS name,',
 '    --',
 '    NULL                    AS supplemental,',
-'    q.count_                AS counter',
+'    q.count_                AS counter,',
+'    --',
+'    CASE WHEN t.topic_id = apex.get_item(''$TEST_GROUP'')',
+'        THEN ''bold''',
+'        END AS css_class',
 'FROM quiz_topics t',
 'LEFT JOIN (',
 '    SELECT',
@@ -81,8 +89,11 @@ wwv_flow_api.create_page_plug(
 ,p_plug_source_type=>'NATIVE_JQM_LIST_VIEW'
 ,p_plug_query_num_rows=>15
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
-,p_attribute_02=>'NAME'
-,p_attribute_06=>'SUPPLEMENTAL'
+,p_attribute_01=>'ADVANCED_FORMATTING'
+,p_attribute_05=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'<span class="&CSS_CLASS.">&NAME.</span>',
+''))
+,p_attribute_07=>'&SUPPLEMENTAL.'
 ,p_attribute_08=>'COUNTER'
 ,p_attribute_16=>'f?p=&APP_ID.:100:&SESSION.::&DEBUG.::P100_TEST_GROUP:&TOPIC_ID.'
 );
@@ -118,7 +129,11 @@ wwv_flow_api.create_page_plug(
 '    --',
 '    t.questions || '' questions, '' || t.explanations || '' explanations'' AS supplemental,',
 '    --',
-'    NVL(FLOOR(100 * (t.is_correct / t.questions)), 0) || ''%'' AS progress',
+'    NVL(FLOOR(100 * (t.is_correct / t.questions)), 0) || ''%'' AS progress,',
+'    --',
+'    CASE WHEN t.test_id = apex.get_item(''$TEST_ID'')',
+'        THEN ''bold''',
+'        END AS css_class',
 'FROM (',
 '    SELECT',
 '        t.test_id,',
@@ -143,8 +158,11 @@ wwv_flow_api.create_page_plug(
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
 ,p_plug_display_when_condition=>'P100_TEST_GROUP'
-,p_attribute_02=>'TEST_NAME'
-,p_attribute_06=>'SUPPLEMENTAL'
+,p_attribute_01=>'ADVANCED_FORMATTING'
+,p_attribute_05=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'<span class="&CSS_CLASS.">&TEST_NAME.</span>',
+''))
+,p_attribute_07=>'&SUPPLEMENTAL.'
 ,p_attribute_08=>'PROGRESS'
 ,p_attribute_16=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_ERROR,P110_SKIP_CORRECT,P110_BOOKMARKED,P110_ANSWER:&TEST_ID.,,,Y,N,'
 );
