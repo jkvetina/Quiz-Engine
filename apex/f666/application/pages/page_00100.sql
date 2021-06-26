@@ -20,8 +20,8 @@ wwv_flow_api.create_page(
 ,p_autocomplete_on_off=>'OFF'
 ,p_group_id=>wwv_flow_api.id(142404407822658913)
 ,p_page_template_options=>'#DEFAULT#'
-,p_last_updated_by=>'DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210624192922'
+,p_last_updated_by=>'QUIZ_DEV'
+,p_last_upd_yyyymmddhh24miss=>'20210626045449'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(262636895176854000)
@@ -55,7 +55,7 @@ wwv_flow_api.create_page_plug(
 '    JOIN quiz_tests t',
 '        ON t.test_id        = q.test_id',
 '    LEFT JOIN quiz_attempts a',
-'        ON 1=1--a.user_id        = sess.get_user_id()',
+'        ON a.user_id        = sess.get_user_id()',
 '        AND a.test_id       = q.test_id',
 '        AND a.question_id   = q.question_id',
 '    WHERE t.test_group      = ''PSPO I''',
@@ -117,7 +117,7 @@ wwv_flow_api.create_page_plug(
 '    JOIN quiz_tests t',
 '        ON t.test_id        = q.test_id',
 '    LEFT JOIN quiz_attempts a',
-'        ON 1=1--a.user_id        = sess.get_user_id()',
+'        ON a.user_id        = sess.get_user_id()',
 '        AND a.test_id       = q.test_id',
 '        AND a.question_id   = q.question_id',
 '    WHERE t.test_group      = ''PSPO II''',
