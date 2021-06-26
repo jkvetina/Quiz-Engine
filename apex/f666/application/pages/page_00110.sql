@@ -48,7 +48,7 @@ wwv_flow_api.create_page(
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210626055657'
+,p_last_upd_yyyymmddhh24miss=>'20210626120248'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(119237602062121148)
@@ -492,15 +492,8 @@ wwv_flow_api.create_page_item(
 ,p_name=>'P110_SHOW_CORRECT_FLAG'
 ,p_item_sequence=>120
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
-,p_prompt=>'Show Correct'
-,p_display_as=>'NATIVE_YES_NO'
-,p_field_template=>wwv_flow_api.id(123651838042713193)
-,p_item_template_options=>'#DEFAULT#'
-,p_attribute_01=>'CUSTOM'
-,p_attribute_02=>'Y'
-,p_attribute_03=>'Y'
-,p_attribute_04=>'N'
-,p_attribute_05=>'N'
+,p_display_as=>'NATIVE_HIDDEN'
+,p_attribute_01=>'Y'
 );
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(138599797885602704)
