@@ -29,5 +29,11 @@ CREATE OR REPLACE PACKAGE quiz AS
     )
     RETURN quiz_questions.question_id%TYPE;
 
+
+
+    PROCEDURE import_questions (
+        in_test_id              quiz_tests.test_id%TYPE
+    );
+
 END;
 /

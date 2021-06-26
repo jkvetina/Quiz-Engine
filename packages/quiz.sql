@@ -332,5 +332,137 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         NULL;
     END;
 
+
+
+    PROCEDURE import_questions (
+        in_test_id              quiz_tests.test_id%TYPE
+    ) AS
+        TYPE dump_lines_t       IS TABLE OF VARCHAR2(4000);
+        --
+        l_dump_lines            dump_lines_t := dump_lines_t();
+        l_line                  VARCHAR2(4000);
+        --
+        l_question_id           quiz_questions.question_id%TYPE;
+        l_answer_id             quiz_answers.answer_id%TYPE;
+        l_search_for            CHAR;
+        --
+        r_question              quiz_questions%ROWTYPE;
+        r_answer                quiz_answers%ROWTYPE;
+        --
+        PROCEDURE clob_to_lines (
+            in_clob                 CLOB,
+            io_array        IN OUT  dump_lines_t
+        ) AS
+            clob_len        PLS_INTEGER     := DBMS_LOB.GETLENGTH(in_clob);
+            offset          PLS_INTEGER     := 1;
+            amount          PLS_INTEGER     := 32767;
+            buffer          VARCHAR2(32767);
+        BEGIN
+            WHILE offset < clob_len LOOP
+                IF INSTR(in_clob, CHR(10), offset) = 0 THEN
+                    amount := clob_len - offset + 1;
+                ELSE
+                    amount := INSTR(in_clob, CHR(10), offset) - offset;
+                END IF;
+                --
+                IF amount = 0 THEN
+                    buffer := '';
+                ELSE
+                    DBMS_LOB.READ(in_clob, amount, offset, buffer);
+                END IF;
+                --
+                io_array.EXTEND;
+                io_array(io_array.LAST) := REPLACE(REPLACE(buffer, CHR(13), ''), CHR(10), '');
+                --
+                IF INSTR(in_clob, CHR(10), offset) = clob_len THEN
+                    buffer := '';
+                END IF;
+                offset := offset + amount + 1;
+            END LOOP;
+        END;
+        --
+    BEGIN
+        FOR c IN (
+            SELECT t.*
+            FROM quiz_tests t
+            WHERE t.test_id = in_test_id
+        ) LOOP
+            l_question_id   := 0;
+            l_dump_lines    := dump_lines_t();
+            --
+            DELETE FROM quiz_answers        WHERE test_id = c.test_id;
+            DELETE FROM quiz_questions      WHERE test_id = c.test_id;
+            --
+            clob_to_lines(c.dump, l_dump_lines);
+            --
+            FOR l_row IN 1 .. l_dump_lines.COUNT LOOP
+                l_line := l_dump_lines(l_row);
+                --
+                IF l_line LIKE 'Question %:%' THEN
+                    l_search_for    := 'Q';
+                    l_question_id   := NVL(l_question_id, 0) + 1;
+                    l_answer_id     := 1;
+                    --
+                    CONTINUE;
+                END IF;
+                --
+                IF l_line LIKE 'Explanation' THEN
+                    l_search_for    := 'X';
+                    --
+                    CONTINUE;
+                END IF;
+
+                --
+                IF (NVL(LENGTH(LTRIM(RTRIM(l_line))), 0) <= 1 OR l_line LIKE '(Correct)') THEN
+                    IF l_search_for = 'Q' AND r_question.question IS NOT NULL THEN
+                        DBMS_OUTPUT.PUT_LINE('');
+                        DBMS_OUTPUT.PUT_LINE(r_question.question_id || ') ' || r_question.question);
+                        INSERT INTO quiz_questions VALUES r_question;
+                        --
+                        r_question.question         := '';
+                        r_question.explanation      := '';
+                        r_answer.answer             := '';
+                        l_search_for                := 'A';
+                        --
+                    ELSIF ((l_search_for = 'A' AND r_answer.answer IS NOT NULL) OR l_line LIKE '(Correct)') THEN
+                        r_answer.is_correct := CASE WHEN l_line LIKE '(Correct)' THEN 'Y' END;
+                        --
+                        DBMS_OUTPUT.PUT_LINE('    [' || NVL(r_answer.is_correct, '_') || '] ' || r_answer.answer);
+                        INSERT INTO quiz_answers VALUES r_answer;
+                        --
+                        r_answer.answer             := '';
+                        l_answer_id                 := l_answer_id + 1;
+                    ELSIF l_search_for = 'X' THEN
+                        UPDATE quiz_questions q
+                        SET q.explanation       = r_question.explanation
+                        WHERE q.test_id         = c.test_id
+                            AND q.question_id   = l_question_id;
+                    END IF;
+                    --
+                    CONTINUE;
+                END IF;
+                --
+                IF l_search_for = 'Q' THEN
+                    r_question.test_id      := c.test_id;
+                    r_question.question_id  := l_question_id;
+                    r_question.question     := LTRIM(r_question.question || CHR(10) || l_line, CHR(10));
+                    r_question.explanation  := NULL;
+                END IF;
+                --
+                IF l_search_for = 'A' THEN
+                    r_answer.test_id        := c.test_id;
+                    r_answer.question_id    := l_question_id;
+                    r_answer.answer_id      := l_answer_id;
+                    r_answer.answer         := LTRIM(r_answer.answer || CHR(10) || l_line, CHR(10));
+                    r_answer.is_correct     := NULL;
+                END IF;
+                --
+                IF l_search_for = 'X' THEN
+                    r_question.explanation  := LTRIM(r_question.explanation || CHR(10) || l_line, CHR(10));
+                END IF;
+            END LOOP;
+        END LOOP;
+    END;
+
 END;
 /
