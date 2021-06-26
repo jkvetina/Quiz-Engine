@@ -41,6 +41,7 @@ wwv_flow_api.create_list_item(
 ,p_list_item_link_text=>'Management'
 ,p_list_item_link_target=>'f?p=&APP_ID.:210:&SESSION.::&DEBUG.::::'
 ,p_parent_list_item_id=>wwv_flow_api.id(123685438105713450)
+,p_security_scheme=>wwv_flow_api.id(123678145775713360)
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
 wwv_flow_api.component_end;
