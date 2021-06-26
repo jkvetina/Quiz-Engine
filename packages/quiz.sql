@@ -322,8 +322,9 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 WHEN in_direction = 'NEXT' AND q.question_id > in_question_id THEN 1
                 ELSE 0 END
             AND 1 = CASE
-                WHEN in_unanswered = 'Y' AND a.answers          IS NULL THEN 1
-                WHEN in_bookmarked = 'Y' AND a.is_bookmarked    = 'Y'   THEN 1
+                WHEN in_unanswered = 'Y'                AND a.answers                   IS NULL THEN 1
+                WHEN in_bookmarked = 'Y'                AND a.is_bookmarked             = 'Y'   THEN 1
+                WHEN NULLIF(in_bookmarked, 'N') IS NULL AND NULLIF(in_unanswered, 'N')  IS NULL THEN 1
                 ELSE 0 END;
         --
         RETURN out_id;
