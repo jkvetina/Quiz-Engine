@@ -92,8 +92,9 @@ prompt --install
 @@application/shared_components/globalization/messages.sql
 @@application/shared_components/globalization/dyntranslations.sql
 @@application/shared_components/user_interface/shortcuts/delete_confirm_msg.sql
-@@application/shared_components/security/authentications/application_express_accounts.sql
+@@application/shared_components/security/authentications/apex_accounts.sql
 @@application/shared_components/security/authentications/public.sql
+@@application/shared_components/security/authentications/open_door_testing_only.sql
 @@application/user_interfaces.sql
 @@application/user_interfaces/combined_files.sql
 @@application/pages/page_00000.sql

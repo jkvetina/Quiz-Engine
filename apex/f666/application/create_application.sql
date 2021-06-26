@@ -30,7 +30,7 @@ wwv_flow_api.create_flow(
 ,p_flow_image_prefix => nvl(wwv_flow_application_install.get_image_prefix,'')
 ,p_documentation_banner=>'Application created from create application wizard 2021.06.13.'
 ,p_authentication=>'PLUGIN'
-,p_authentication_id=>wwv_flow_api.id(124199700238750337)
+,p_authentication_id=>wwv_flow_api.id(143713614190744339)
 ,p_application_tab_set=>0
 ,p_logo_type=>'T'
 ,p_logo_text=>'Quiz Engine'
@@ -51,8 +51,8 @@ wwv_flow_api.create_flow(
 ,p_error_handling_function=>'#OWNER#.tree.log_apex_error'
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'Quiz Engine'
-,p_last_updated_by=>'DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210624201702'
+,p_last_updated_by=>'QUIZ_DEV'
+,p_last_upd_yyyymmddhh24miss=>'20210626045449'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>3
 ,p_ui_type_name => null
