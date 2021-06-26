@@ -22,9 +22,10 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         END IF;
 
         -- load data
-        apex.set_item('$QUESTION',      '');
-        apex.set_item('$ANSWER',        '');
-        apex.set_item('$EXPLANATION',   '');
+        apex.set_item('$QUESTION',          '');
+        apex.set_item('$ANSWER',            '');
+        apex.set_item('$EXPLANATION',       '');
+        apex.set_item('$SHOW_CORRECT_FLAG', '');
         --
         FOR c IN (
             SELECT t.*
@@ -82,6 +83,10 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 apex.set_item('$ANSWER',        c.answers);
                 apex.set_item('$ERROR',         '');
             END LOOP;
+            --
+            IF apex.get_item('$EXPLANATION') IS NOT NULL THEN
+                apex.set_item('$SHOW_CORRECT_FLAG', 'Y');
+            END IF;
         END IF;
 
         -- calculate percentages

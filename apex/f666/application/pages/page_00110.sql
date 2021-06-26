@@ -47,8 +47,8 @@ wwv_flow_api.create_page(
 '}',
 ''))
 ,p_page_template_options=>'#DEFAULT#'
-,p_last_updated_by=>'DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210624095131'
+,p_last_updated_by=>'QUIZ_DEV'
+,p_last_upd_yyyymmddhh24miss=>'20210626055657'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(119237602062121148)
@@ -95,7 +95,7 @@ wwv_flow_api.create_page_plug(
 ''))
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
-,p_plug_display_when_condition=>'P110_EXPLANATION'
+,p_plug_display_when_condition=>'P110_SHOW_CORRECT_FLAG'
 ,p_attribute_01=>'N'
 ,p_attribute_02=>'HTML'
 );
@@ -258,7 +258,7 @@ wwv_flow_api.create_page_button(
 ,p_button_position=>'BELOW_BOX'
 ,p_button_alignment=>'LEFT'
 ,p_button_redirect_url=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_SHOW_CORRECT,P110_ERROR:&P110_TEST_ID.,&P110_QUESTION_ID.,Y,'
-,p_button_condition=>'P110_SHOW_CORRECT'
+,p_button_condition=>'P110_SHOW_CORRECT_FLAG'
 ,p_button_condition_type=>'ITEM_IS_NULL'
 ,p_button_cattributes=>'style="margin: 2rem 1.5rem 0 0;" title="Expecting: &P110_EXPECTED. answer(s)"'
 );
@@ -274,6 +274,22 @@ wwv_flow_api.create_page_button(
 ,p_button_position=>'BELOW_BOX'
 ,p_button_condition=>'P110_PROGRESS_PERC'
 ,p_button_condition_type=>'ITEM_IS_NOT_ZERO'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(143432592019904419)
+,p_button_sequence=>20
+,p_button_plug_id=>wwv_flow_api.id(125299989539847006)
+,p_button_name=>'HIDE_CORRECT'
+,p_button_action=>'REDIRECT_PAGE'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(123652925875713205)
+,p_button_image_alt=>'Hide Correct'
+,p_button_position=>'BELOW_BOX'
+,p_button_alignment=>'LEFT'
+,p_button_redirect_url=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_SHOW_CORRECT,P110_ERROR:&P110_TEST_ID.,&P110_QUESTION_ID.,,'
+,p_button_condition=>'P110_SHOW_CORRECT_FLAG'
+,p_button_condition_type=>'ITEM_IS_NOT_NULL'
+,p_button_cattributes=>'style="margin: 2rem 1.5rem 0 0;"'
 );
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(125300176469847008)
@@ -386,7 +402,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(125302968374847036)
 ,p_name=>'P110_BOOKMARKED'
-,p_item_sequence=>50
+,p_item_sequence=>30
 ,p_item_plug_id=>wwv_flow_api.id(125299989539847006)
 ,p_prompt=>'Bookmark'
 ,p_display_as=>'NATIVE_YES_NO'
@@ -418,7 +434,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(125303825420847045)
 ,p_name=>'P110_BOOKMARKED_PERC'
-,p_item_sequence=>70
+,p_item_sequence=>50
 ,p_item_plug_id=>wwv_flow_api.id(125299989539847006)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -426,7 +442,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(125304098221847047)
 ,p_name=>'P110_UNANSWERED_PERC'
-,p_item_sequence=>80
+,p_item_sequence=>60
 ,p_item_plug_id=>wwv_flow_api.id(125299989539847006)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -442,7 +458,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(138599962324602706)
 ,p_name=>'P110_PROGRESS_PERC'
-,p_item_sequence=>90
+,p_item_sequence=>70
 ,p_item_plug_id=>wwv_flow_api.id(125299989539847006)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -450,7 +466,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(138600025986602707)
 ,p_name=>'P110_SKIP_CORRECT'
-,p_item_sequence=>60
+,p_item_sequence=>40
 ,p_item_plug_id=>wwv_flow_api.id(125299989539847006)
 ,p_prompt=>'Skip Correct'
 ,p_display_as=>'NATIVE_YES_NO'
@@ -470,6 +486,21 @@ wwv_flow_api.create_page_item(
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(143432413462904418)
+,p_name=>'P110_SHOW_CORRECT_FLAG'
+,p_item_sequence=>120
+,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
+,p_prompt=>'Show Correct'
+,p_display_as=>'NATIVE_YES_NO'
+,p_field_template=>wwv_flow_api.id(123651838042713193)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'CUSTOM'
+,p_attribute_02=>'Y'
+,p_attribute_03=>'Y'
+,p_attribute_04=>'N'
+,p_attribute_05=>'N'
 );
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(138599797885602704)
