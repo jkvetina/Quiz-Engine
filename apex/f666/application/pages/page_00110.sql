@@ -556,6 +556,7 @@ wwv_flow_api.create_page_process(
 ,p_process_clob_language=>'PLSQL'
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 ,p_process_when_button_id=>wwv_flow_api.id(138600171193602708)
+,p_process_success_message=>'Bookmarks cleared'
 );
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(138600545339602712)
@@ -569,6 +570,7 @@ wwv_flow_api.create_page_process(
 ,p_process_clob_language=>'PLSQL'
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 ,p_process_when_button_id=>wwv_flow_api.id(138600422622602711)
+,p_process_success_message=>'Progress cleared'
 );
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(125302463944847031)
