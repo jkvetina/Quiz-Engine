@@ -89,6 +89,12 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             END IF;
         END IF;
 
+        -- show explanation when answer is correct, but dont flip Bookmark switch
+        IF apex.get_item('$ANSWER') IS NOT NULL THEN
+            apex.set_item('$SHOW_CORRECT',      'Y');
+            apex.set_item('$SHOW_CORRECT_FLAG', 'Y');
+        END IF;
+
         -- calculate percentages
         FOR c IN (
             SELECT CASE WHEN COUNT(*) > 0 THEN ROUND(100 * (COUNT(a.is_bookmarked) / COUNT(*)), 0) ELSE 0 END AS perc
