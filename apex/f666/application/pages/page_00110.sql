@@ -340,6 +340,16 @@ wwv_flow_api.create_page_branch(
 ,p_branch_type=>'REDIRECT_URL'
 ,p_branch_sequence=>10
 );
+wwv_flow_api.create_page_branch(
+ p_id=>wwv_flow_api.id(143432819543904422)
+,p_branch_name=>'REDIRECT_HOME'
+,p_branch_action=>'f?p=&APP_ID.:HOME:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+,p_branch_point=>'BEFORE_HEADER'
+,p_branch_type=>'REDIRECT_URL'
+,p_branch_sequence=>20
+,p_branch_condition_type=>'ITEM_IS_NULL'
+,p_branch_condition=>'P110_TEST_ID'
+);
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(119237738241121149)
 ,p_name=>'P110_QUESTION_ID'
