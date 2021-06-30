@@ -5,6 +5,9 @@ CREATE TABLE quiz_tests (
     test_topic      VARCHAR2(30)    NOT NULL,
     dump            CLOB,
     --
+    dedicated_to    VARCHAR2(240),
+    created_at      DATE,
+    --
     CONSTRAINT pk_quiz_tests
         PRIMARY KEY (test_id),
     --

@@ -470,5 +470,101 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         END LOOP;
     END;
 
+
+
+    PROCEDURE delete_test (
+        in_test_id          quiz_tests.test_id%TYPE
+    ) AS
+    BEGIN
+        -- delete previous test
+        DELETE FROM quiz_attempts   WHERE test_id = in_test_id;
+        DELETE FROM quiz_answers    WHERE test_id = in_test_id;
+        DELETE FROM quiz_questions  WHERE test_id = in_test_id;
+        DELETE FROM quiz_tests      WHERE test_id = in_test_id;
+    END;
+
+
+
+    PROCEDURE create_bookmarked_test (
+        in_test_group       quiz_tests.test_topic%TYPE,
+        in_user_id          quiz_attempts.user_id%TYPE
+    )
+    AS
+        in_test_name        CONSTANT quiz_tests.test_name%TYPE      := 'BOOKMARKED';
+        --
+        new_test_id         quiz_tests.test_id%TYPE;
+        new_question_id     quiz_questions.question_id%TYPE         := 0;
+    BEGIN
+        -- check if test exists
+        SELECT MAX(t.test_id) INTO new_test_id
+        FROM quiz_tests t
+        WHERE t.test_name       = in_test_name
+            AND t.test_topic    = in_test_group
+            AND t.dedicated_to  = in_user_id;
+
+        -- delete previous test
+        quiz.delete_test(new_test_id);
+
+        -- create test
+        IF new_test_id IS NULL THEN
+            SELECT MAX(t.test_id) + 1 INTO new_test_id
+            FROM quiz_tests t;
+        END IF;
+        --
+        INSERT INTO quiz_tests (test_id, test_name, test_topic, dedicated_to, created_at)
+        VALUES (
+            new_test_id,
+            in_test_name,
+            in_test_group,
+            in_user_id,
+            SYSDATE
+        );
+
+        -- find all bookmarked questions for whole group/topic
+        FOR c IN (
+            SELECT q.test_id, q.question_id, q.question, q.explanation
+            FROM quiz_attempts a
+            JOIN quiz_questions q
+                ON q.test_id        = a.test_id
+                AND q.question_id   = a.question_id
+            WHERE a.user_id         = in_user_id
+                AND a.is_bookmarked = 'Y'
+                AND a.test_id       IN (
+                    SELECT t.test_id
+                    FROM quiz_tests t
+                    WHERE t.test_topic = in_test_group
+                )
+            ORDER BY a.test_id, a.question_id
+        ) LOOP
+            new_question_id := new_question_id + 1;
+
+            -- create questions
+            INSERT INTO quiz_questions (test_id, question_id, question, explanation)
+            VALUES (
+                new_test_id,
+                new_question_id,
+                c.question,
+                c.explanation
+            );
+
+            -- create answers
+            FOR d IN (
+                SELECT a.answer_id, a.answer, a.is_correct
+                FROM quiz_answers a
+                WHERE a.test_id         = c.test_id
+                    AND a.question_id   = c.question_id
+            ) LOOP
+                INSERT INTO quiz_answers (test_id, question_id, answer_id, answer, is_correct)
+                VALUES (
+                    new_test_id,
+                    new_question_id,
+                    d.answer_id,
+                    d.answer,
+                    d.is_correct
+                );
+            END LOOP;
+        END LOOP;
+    END;
+
 END;
 /

@@ -33,7 +33,7 @@ wwv_flow_api.create_page_plug(
 ,p_region_template_options=>'#DEFAULT#'
 ,p_component_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(123562018608712965)
-,p_plug_display_sequence=>40
+,p_plug_display_sequence=>50
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_new_grid_row=>false
 ,p_plug_display_column=>8
@@ -54,11 +54,86 @@ wwv_flow_api.create_page_plug(
 ,p_plug_display_when_condition=>'P100_TEST_GROUP'
 );
 wwv_flow_api.create_page_plug(
- p_id=>wwv_flow_api.id(262636895176854000)
-,p_plug_name=>'Topics'
+ p_id=>wwv_flow_api.id(143433243775904426)
+,p_plug_name=>'Tests'
+,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--scrollBody'
+,p_plug_template=>wwv_flow_api.id(123590440289713011)
+,p_plug_display_sequence=>30
+,p_plug_new_grid_row=>false
+,p_plug_grid_column_span=>3
+,p_plug_display_point=>'BODY'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
+,p_plug_display_when_condition=>'P100_TEST_GROUP'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(282002255787335588)
+,p_plug_name=>'Tests'
+,p_parent_plug_id=>wwv_flow_api.id(143433243775904426)
 ,p_region_template_options=>'#DEFAULT#'
 ,p_escape_on_http_output=>'Y'
-,p_plug_template=>wwv_flow_api.id(123588534616713005)
+,p_plug_template=>wwv_flow_api.id(123562018608712965)
+,p_plug_display_sequence=>10
+,p_plug_new_grid_row=>false
+,p_plug_display_point=>'BODY'
+,p_query_type=>'SQL'
+,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT',
+'    t.test_id,',
+'    t.test_name,',
+'    --',
+'    t.questions || '' questions, '' || t.explanations || '' explanations'' AS supplemental,',
+'    --',
+'    NVL(FLOOR(100 * (t.is_correct / t.questions)), 0) || ''%'' AS progress,',
+'    --',
+'    CASE WHEN t.test_id = apex.get_item(''$TEST_ID'')',
+'        THEN ''bold''',
+'        END AS css_class',
+'FROM (',
+'    SELECT',
+'        t.test_id,',
+'        t.test_name,',
+'        COUNT(q.question_id)                                        AS questions,',
+'        SUM(CASE WHEN q.explanation IS NOT NULL THEN 1 ELSE 0 END)  AS explanations,',
+'        SUM(CASE WHEN a.is_correct = ''Y'' THEN 1 ELSE 0 END)         AS is_correct,',
+'        t.dedicated_to',
+'    FROM quiz_questions q',
+'    JOIN quiz_tests t',
+'        ON t.test_id        = q.test_id',
+'    LEFT JOIN quiz_attempts a',
+'        ON a.user_id        = sess.get_user_id()',
+'        AND a.test_id       = q.test_id',
+'        AND a.question_id   = q.question_id',
+'    WHERE t.test_topic      = apex.get_item(''$TEST_GROUP'')',
+'        AND (',
+'            t.dedicated_to      IS NULL',
+'            OR t.dedicated_to   = sess.get_user_id()',
+'        )',
+'    GROUP BY t.test_id, t.test_name, t.dedicated_to',
+') t',
+'ORDER BY t.dedicated_to NULLS FIRST, t.test_id;',
+''))
+,p_plug_source_type=>'NATIVE_JQM_LIST_VIEW'
+,p_plug_query_num_rows=>15
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
+,p_plug_display_when_condition=>'P100_TEST_GROUP'
+,p_attribute_01=>'ADVANCED_FORMATTING'
+,p_attribute_05=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'<span class="&CSS_CLASS.">&TEST_NAME.</span>',
+''))
+,p_attribute_07=>'&SUPPLEMENTAL.'
+,p_attribute_08=>'PROGRESS'
+,p_attribute_16=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_ERROR,P110_SKIP_CORRECT,P110_BOOKMARKED,P110_ANSWER:&TEST_ID.,,,Y,N,'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(262636895176854000)
+,p_plug_name=>'Topics'
+,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--scrollBody'
+,p_escape_on_http_output=>'Y'
+,p_plug_template=>wwv_flow_api.id(123590440289713011)
 ,p_plug_display_sequence=>20
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_grid_column_span=>3
@@ -110,61 +185,19 @@ wwv_flow_api.create_page_plug(
 ,p_attribute_01=>'N'
 ,p_attribute_02=>'HTML'
 );
-wwv_flow_api.create_page_plug(
- p_id=>wwv_flow_api.id(282002255787335588)
-,p_plug_name=>'Tests'
-,p_region_template_options=>'#DEFAULT#'
-,p_escape_on_http_output=>'Y'
-,p_plug_template=>wwv_flow_api.id(123588534616713005)
-,p_plug_display_sequence=>30
-,p_include_in_reg_disp_sel_yn=>'Y'
-,p_plug_new_grid_row=>false
-,p_plug_grid_column_span=>3
-,p_plug_display_point=>'BODY'
-,p_query_type=>'SQL'
-,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT',
-'    t.test_id,',
-'    t.test_name,',
-'    --',
-'    t.questions || '' questions, '' || t.explanations || '' explanations'' AS supplemental,',
-'    --',
-'    NVL(FLOOR(100 * (t.is_correct / t.questions)), 0) || ''%'' AS progress,',
-'    --',
-'    CASE WHEN t.test_id = apex.get_item(''$TEST_ID'')',
-'        THEN ''bold''',
-'        END AS css_class',
-'FROM (',
-'    SELECT',
-'        t.test_id,',
-'        t.test_name,',
-'        COUNT(q.question_id)                                        AS questions,',
-'        SUM(CASE WHEN q.explanation IS NOT NULL THEN 1 ELSE 0 END)  AS explanations,',
-'        SUM(CASE WHEN a.is_correct = ''Y'' THEN 1 ELSE 0 END)         AS is_correct',
-'    FROM quiz_questions q',
-'    JOIN quiz_tests t',
-'        ON t.test_id        = q.test_id',
-'    LEFT JOIN quiz_attempts a',
-'        ON a.user_id        = sess.get_user_id()',
-'        AND a.test_id       = q.test_id',
-'        AND a.question_id   = q.question_id',
-'    WHERE t.test_topic      = apex.get_item(''$TEST_GROUP'')',
-'    GROUP BY t.test_id, t.test_name',
-') t',
-'ORDER BY 1;',
-''))
-,p_plug_source_type=>'NATIVE_JQM_LIST_VIEW'
-,p_plug_query_num_rows=>15
-,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
-,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
-,p_plug_display_when_condition=>'P100_TEST_GROUP'
-,p_attribute_01=>'ADVANCED_FORMATTING'
-,p_attribute_05=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'<span class="&CSS_CLASS.">&TEST_NAME.</span>',
-''))
-,p_attribute_07=>'&SUPPLEMENTAL.'
-,p_attribute_08=>'PROGRESS'
-,p_attribute_16=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_ERROR,P110_SKIP_CORRECT,P110_BOOKMARKED,P110_ANSWER:&TEST_ID.,,,Y,N,'
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(143432941306904423)
+,p_button_sequence=>10
+,p_button_plug_id=>wwv_flow_api.id(282002255787335588)
+,p_button_name=>'CREATE_FROM_BOOKMARKED'
+,p_button_action=>'SUBMIT'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(123652925875713205)
+,p_button_image_alt=>'Create new from &P100_BOOKMARKED_COUNT. bookmarked q.'
+,p_button_position=>'REGION_TEMPLATE_NEXT'
+,p_button_condition=>'P100_BOOKMARKED_COUNT'
+,p_button_condition_type=>'ITEM_IS_NOT_NULL'
+,p_button_cattributes=>'style="margin: 2rem 0 0;"'
 );
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(143432627833904420)
@@ -173,6 +206,49 @@ wwv_flow_api.create_page_item(
 ,p_item_plug_id=>wwv_flow_api.id(262636895176854000)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(143433096446904424)
+,p_name=>'P100_BOOKMARKED_COUNT'
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(262636895176854000)
+,p_display_as=>'NATIVE_HIDDEN'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_computation(
+ p_id=>wwv_flow_api.id(143433180107904425)
+,p_computation_sequence=>10
+,p_computation_item=>'P100_BOOKMARKED_COUNT'
+,p_computation_point=>'AFTER_HEADER'
+,p_computation_type=>'QUERY'
+,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT COUNT(*) AS count_',
+'FROM quiz_attempts a',
+'WHERE a.user_id         = sess.get_user_id()',
+'    AND a.is_bookmarked = ''Y''',
+'    AND a.test_id       IN (',
+'        SELECT t.test_id',
+'        FROM quiz_tests t',
+'        WHERE t.test_topic = apex.get_item(''$TEST_GROUP'')',
+'    );',
+''))
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(143433449856904428)
+,p_process_sequence=>10
+,p_process_point=>'AFTER_SUBMIT'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'CREATE_BOOKMARKED'
+,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'quiz.create_bookmarked_test (',
+'    in_test_group       => apex.get_item(''$TEST_GROUP''),',
+'    in_user_id          => sess.get_user_id()',
+');',
+''))
+,p_process_clob_language=>'PLSQL'
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
+,p_process_when_button_id=>wwv_flow_api.id(143432941306904423)
+,p_process_success_message=>'Test from bookmarked questions created/updated'
 );
 wwv_flow_api.component_end;
 end;

@@ -35,5 +35,18 @@ CREATE OR REPLACE PACKAGE quiz AS
         in_test_id              quiz_tests.test_id%TYPE
     );
 
+
+
+    PROCEDURE delete_test (
+        in_test_id          quiz_tests.test_id%TYPE
+    );
+
+
+
+    PROCEDURE create_bookmarked_test (
+        in_test_group       quiz_tests.test_topic%TYPE,
+        in_user_id          quiz_attempts.user_id%TYPE
+    );
+
 END;
 /
