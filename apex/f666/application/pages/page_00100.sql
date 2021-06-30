@@ -156,6 +156,14 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(143433096446904424)
 ,p_name=>'P100_BOOKMARKED_COUNT'
+,p_item_sequence=>30
+,p_item_plug_id=>wwv_flow_api.id(262636895176854000)
+,p_display_as=>'NATIVE_HIDDEN'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(143433541437904429)
+,p_name=>'P100_TEST_ID'
 ,p_item_sequence=>20
 ,p_item_plug_id=>wwv_flow_api.id(262636895176854000)
 ,p_display_as=>'NATIVE_HIDDEN'
@@ -177,6 +185,21 @@ wwv_flow_api.create_page_computation(
 '        FROM quiz_tests t',
 '        WHERE t.test_topic = apex.get_item(''$TEST_GROUP'')',
 '    );',
+''))
+);
+wwv_flow_api.create_page_computation(
+ p_id=>wwv_flow_api.id(143433635334904430)
+,p_computation_sequence=>10
+,p_computation_item=>'P100_TEST_ID'
+,p_computation_point=>'BEFORE_BOX_BODY'
+,p_computation_type=>'QUERY'
+,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT MIN(a.test_id) KEEP (DENSE_RANK FIRST ORDER BY a.updated_at DESC) AS last_test',
+'FROM quiz_attempts a',
+'JOIN quiz_tests t',
+'    ON t.test_id        = a.test_id',
+'WHERE a.user_id         = sess.get_user_id()',
+'    AND t.test_topic    = apex.get_item(''$TEST_GROUP'');',
 ''))
 );
 wwv_flow_api.create_page_process(
