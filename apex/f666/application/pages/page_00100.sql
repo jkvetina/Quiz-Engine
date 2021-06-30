@@ -78,45 +78,11 @@ wwv_flow_api.create_page_plug(
 ,p_plug_display_sequence=>10
 ,p_plug_new_grid_row=>false
 ,p_plug_display_point=>'BODY'
-,p_query_type=>'SQL'
-,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT',
-'    t.test_id,',
-'    t.test_name,',
-'    --',
-'    t.questions || '' questions, '' || t.explanations || '' explanations'' AS supplemental,',
-'    --',
-'    NVL(FLOOR(100 * (t.is_correct / t.questions)), 0) || ''%'' AS progress,',
-'    --',
-'    CASE WHEN t.test_id = apex.get_item(''$TEST_ID'')',
-'        THEN ''bold''',
-'        END AS css_class',
-'FROM (',
-'    SELECT',
-'        t.test_id,',
-'        t.test_name,',
-'        COUNT(q.question_id)                                        AS questions,',
-'        SUM(CASE WHEN q.explanation IS NOT NULL THEN 1 ELSE 0 END)  AS explanations,',
-'        SUM(CASE WHEN a.is_correct = ''Y'' THEN 1 ELSE 0 END)         AS is_correct,',
-'        t.dedicated_to',
-'    FROM quiz_questions q',
-'    JOIN quiz_tests t',
-'        ON t.test_id        = q.test_id',
-'    LEFT JOIN quiz_attempts a',
-'        ON a.user_id        = sess.get_user_id()',
-'        AND a.test_id       = q.test_id',
-'        AND a.question_id   = q.question_id',
-'    WHERE t.test_topic      = apex.get_item(''$TEST_GROUP'')',
-'        AND (',
-'            t.dedicated_to      IS NULL',
-'            OR t.dedicated_to   = sess.get_user_id()',
-'        )',
-'    GROUP BY t.test_id, t.test_name, t.dedicated_to',
-') t',
-'ORDER BY t.dedicated_to NULLS FIRST, t.test_id;',
-''))
+,p_query_type=>'TABLE'
+,p_query_table=>'P100_TESTS'
+,p_include_rowid_column=>false
 ,p_plug_source_type=>'NATIVE_JQM_LIST_VIEW'
-,p_plug_query_num_rows=>15
+,p_plug_query_num_rows=>30
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
 ,p_plug_display_when_condition=>'P100_TEST_GROUP'
@@ -125,7 +91,7 @@ wwv_flow_api.create_page_plug(
 '<span class="&CSS_CLASS.">&TEST_NAME.</span>',
 ''))
 ,p_attribute_07=>'&SUPPLEMENTAL.'
-,p_attribute_08=>'PROGRESS'
+,p_attribute_08=>'COUNT_'
 ,p_attribute_16=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_ERROR,P110_SKIP_CORRECT,P110_BOOKMARKED,P110_ANSWER:&TEST_ID.,,,Y,N,'
 );
 wwv_flow_api.create_page_plug(
@@ -138,31 +104,11 @@ wwv_flow_api.create_page_plug(
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_grid_column_span=>3
 ,p_plug_display_point=>'BODY'
-,p_query_type=>'SQL'
-,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT',
-'    t.topic_id,',
-'    t.topic_name            AS name,',
-'    --',
-'    NULL                    AS supplemental,',
-'    q.count_                AS counter,',
-'    --',
-'    CASE WHEN t.topic_id = apex.get_item(''$TEST_GROUP'')',
-'        THEN ''bold''',
-'        END AS css_class',
-'FROM quiz_topics t',
-'LEFT JOIN (',
-'    SELECT',
-'        t.test_topic,',
-'        COUNT(*)            AS count_',
-'    FROM quiz_tests t',
-'    GROUP BY t.test_topic',
-') q',
-'    ON q.test_topic         = t.topic_id',
-'ORDER BY 1;',
-''))
+,p_query_type=>'TABLE'
+,p_query_table=>'P100_TOPICS'
+,p_include_rowid_column=>false
 ,p_plug_source_type=>'NATIVE_JQM_LIST_VIEW'
-,p_plug_query_num_rows=>15
+,p_plug_query_num_rows=>30
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_attribute_01=>'ADVANCED_FORMATTING'
 ,p_attribute_05=>wwv_flow_string.join(wwv_flow_t_varchar2(
