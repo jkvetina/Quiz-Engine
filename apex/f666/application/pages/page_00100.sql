@@ -193,7 +193,8 @@ wwv_flow_api.create_page_computation(
 '    AND a.test_id       IN (',
 '        SELECT t.test_id',
 '        FROM quiz_tests t',
-'        WHERE t.test_topic = apex.get_item(''$TEST_GROUP'')',
+'        WHERE t.test_topic      = apex.get_item(''$TEST_GROUP'')',
+'            AND t.test_name     != ''BOOKMARKED''',
 '    );',
 ''))
 );
