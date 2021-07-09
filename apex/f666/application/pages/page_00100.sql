@@ -25,7 +25,7 @@ wwv_flow_api.create_page(
 '}'))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210701174800'
+,p_last_upd_yyyymmddhh24miss=>'20210705190929'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(143432731519904421)
@@ -60,7 +60,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_name=>'Tests'
 ,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>30
+,p_plug_display_sequence=>40
 ,p_plug_new_grid_row=>false
 ,p_plug_grid_column_span=>3
 ,p_plug_display_point=>'BODY'
@@ -95,6 +95,39 @@ wwv_flow_api.create_page_plug(
 ,p_attribute_07=>'&SUPPLEMENTAL.'
 ,p_attribute_08=>'COUNT_'
 ,p_attribute_16=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_ERROR,P110_SKIP_CORRECT,P110_BOOKMARKED,P110_ANSWER:&TEST_ID.,,,Y,N,'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(143434133281904435)
+,p_plug_name=>'Activity Check'
+,p_region_template_options=>'#DEFAULT#'
+,p_escape_on_http_output=>'Y'
+,p_plug_template=>wwv_flow_api.id(123562018608712965)
+,p_plug_display_sequence=>30
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_new_grid_row=>false
+,p_plug_new_grid_column=>false
+,p_plug_display_point=>'BODY'
+,p_query_type=>'SQL'
+,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT',
+'    a.user_id           AS name,',
+'    COUNT(*)            AS counter,',
+'    --',
+'    TO_CHAR(MAX(a.updated_at), ''YYYY-MM-DD, HH24:MI'') AS supplement',
+'FROM quiz_attempts a',
+'JOIN quiz_tests t',
+'    ON t.test_id        = a.test_id',
+'WHERE t.test_topic      = NVL(apex.get_item(''$TEST_GROUP''), t.test_topic)',
+'GROUP BY a.user_id',
+'ORDER BY 1;',
+''))
+,p_plug_source_type=>'NATIVE_JQM_LIST_VIEW'
+,p_plug_query_num_rows=>15
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_plug_required_role=>wwv_flow_api.id(123678145775713360)
+,p_attribute_02=>'NAME'
+,p_attribute_06=>'SUPPLEMENT'
+,p_attribute_08=>'COUNTER'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(262636895176854000)
