@@ -538,7 +538,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 AND a.test_id       IN (
                     SELECT t.test_id
                     FROM quiz_tests t
-                    WHERE t.test_topic = in_test_group
+                    WHERE t.test_topic      = in_test_group
+                        AND t.test_name     != in_test_name
                 )
             ORDER BY a.test_id, a.question_id
         ) LOOP
