@@ -24,8 +24,9 @@ wwv_flow_api.create_page(
 '  margin-top: 2rem;',
 '}'))
 ,p_page_template_options=>'#DEFAULT#'
+,p_required_role=>wwv_flow_api.id(123678145775713360)
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210703194631'
+,p_last_upd_yyyymmddhh24miss=>'20210711082258'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(286600257237137941)
