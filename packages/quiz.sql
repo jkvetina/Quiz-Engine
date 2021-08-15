@@ -429,7 +429,12 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                     IF l_search_for = 'Q' AND r_question.question IS NOT NULL THEN
                         DBMS_OUTPUT.PUT_LINE('');
                         DBMS_OUTPUT.PUT_LINE(r_question.question_id || ') ' || r_question.question);
-                        INSERT INTO quiz_questions VALUES r_question;
+                        BEGIN
+                            INSERT INTO quiz_questions VALUES r_question;
+                        EXCEPTION
+                        WHEN OTHERS THEN
+                            tree.raise_error('QUESTION', r_question.question_id, r_question.question);
+                        END;
                         --
                         r_question.question         := '';
                         r_question.explanation      := '';
@@ -440,7 +445,12 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                         r_answer.is_correct := CASE WHEN l_line LIKE '(Correct)' THEN 'Y' END;
                         --
                         DBMS_OUTPUT.PUT_LINE('    [' || NVL(r_answer.is_correct, '_') || '] ' || r_answer.answer);
-                        INSERT INTO quiz_answers VALUES r_answer;
+                        BEGIN
+                            INSERT INTO quiz_answers VALUES r_answer;
+                        EXCEPTION
+                        WHEN OTHERS THEN
+                            tree.raise_error('QUESTION/ANSWER', r_question.question_id, r_question.question, r_answer.is_correct, r_answer.answer);
+                        END;
                         --
                         r_answer.answer             := '';
                         l_answer_id                 := l_answer_id + 1;
