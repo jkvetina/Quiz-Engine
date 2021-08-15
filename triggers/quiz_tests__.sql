@@ -13,6 +13,11 @@ COMPOUND TRIGGER
         THEN
             l_test_id := :NEW.test_id;
         END IF;
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error('TESTS_UPSERT_FAILED');
     END BEFORE EACH ROW;
 
 
@@ -22,6 +27,11 @@ COMPOUND TRIGGER
         IF l_test_id IS NOT NULL THEN
             quiz.import_questions(l_test_id);
         END IF;
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error('TESTS_FOLLOWUP_FAILED');
     END AFTER STATEMENT;
 
 END;
