@@ -480,7 +480,12 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 END IF;
                 --
                 IF l_search_for = 'X' THEN
-                    r_question.explanation  := LTRIM(r_question.explanation || CHR(10) || l_line, CHR(10));
+                    BEGIN
+                        r_question.explanation  := LTRIM(r_question.explanation || CHR(10) || l_line, CHR(10));
+                    EXCEPTION
+                    WHEN OTHERS THEN
+                        tree.raise_error('EXPLANATION', r_question.question_id, r_question.question, LENGTH(r_question.explanation || CHR(10) || l_line));
+                    END;
                 END IF;
             END LOOP;
         END LOOP;
