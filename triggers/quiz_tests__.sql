@@ -13,6 +13,13 @@ COMPOUND TRIGGER
         THEN
             l_test_id := :NEW.test_id;
         END IF;
+
+        -- delete related rows
+        IF DELETING THEN
+            DELETE FROM quiz_attempts   WHERE test_id = :OLD.test_id;
+            DELETE FROM quiz_answers    WHERE test_id = :OLD.test_id;
+            DELETE FROM quiz_questions  WHERE test_id = :OLD.test_id;
+        END IF;
     EXCEPTION
     WHEN tree.app_exception THEN
         RAISE;
