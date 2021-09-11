@@ -30,7 +30,7 @@ FROM (
         ON a.user_id        = sess.get_user_id()
         AND a.test_id       = q.test_id
         AND a.question_id   = q.question_id
-    WHERE t.test_topic      = apex.get_item('$TEST_GROUP')
+    WHERE t.test_topic      = apex.get_item('$TOPIC_ID')
         AND (
             t.dedicated_to      IS NULL
             OR t.dedicated_to   = sess.get_user_id()

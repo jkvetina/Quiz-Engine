@@ -6,11 +6,6 @@ prompt --install
 @@application/shared_components/navigation/lists/desktop_navigation_bar.sql
 @@application/shared_components/files/app_icon_svg.sql
 @@application/shared_components/files/app_icon_css.sql
-@@application/shared_components/files/badge_pspoii_svg.sql
-@@application/shared_components/files/badge_pspoi_svg.sql
-@@application/shared_components/files/badge_pspoiii_svg.sql
-@@application/shared_components/files/badge_psdi_svg.sql
-@@application/shared_components/files/badge_psui_svg.sql
 @@application/plugin_settings.sql
 @@application/shared_components/security/authorizations/is_developer.sql
 @@application/shared_components/navigation/navigation_bar.sql

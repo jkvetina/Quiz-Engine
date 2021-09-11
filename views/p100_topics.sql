@@ -7,7 +7,7 @@ SELECT
     --
     q.tests                 AS counter,
     --
-    CASE WHEN t.topic_id = apex.get_item('$TEST_GROUP')
+    CASE WHEN t.topic_id = apex.get_item('$TOPIC_ID')
         THEN 'bold'
         END AS css_class
 FROM quiz_topics t

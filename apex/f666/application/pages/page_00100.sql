@@ -22,41 +22,20 @@ wwv_flow_api.create_page(
 ,p_inline_css=>wwv_flow_string.join(wwv_flow_t_varchar2(
 '.bold {',
 '  font-weight: bold;',
-'}'))
+'}',
+'',
+'#P100_BADGE_FILE_CONTAINER div.t-Form-labelContainer,',
+'#P100_NOTE_CONTAINER div.t-Form-labelContainer {',
+'  display: none;',
+'}',
+'#P100_NOTE_DISPLAY {',
+'  border: 0;',
+'  padding: 0;',
+'}',
+''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210815055433'
-);
-wwv_flow_api.create_page_plug(
- p_id=>wwv_flow_api.id(143432731519904421)
-,p_plug_name=>'&P100_BADGE_NAME.'
-,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
-,p_component_template_options=>'#DEFAULT#'
-,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>50
-,p_include_in_reg_disp_sel_yn=>'Y'
-,p_plug_new_grid_row=>false
-,p_plug_grid_column_span=>6
-,p_plug_display_column=>7
-,p_plug_display_point=>'BODY'
-,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'FOR c IN (',
-'    SELECT t.*',
-'    FROM quiz_topics t',
-'    WHERE t.topic_id        = apex.get_item(''$TEST_GROUP'')',
-'        AND t.badge_name    IS NOT NULL',
-') LOOP',
-'    IF c.badge_image IS NOT NULL THEN',
-'    htp.p(''<img src="#APP_IMAGES#'' || c.badge_image || ''" width="180" style="float: left; clear: none; padding: 2rem 3rem 2rem 2rem;" />'');',
-'    END IF;',
-'    --',
-'    htp.p(''<p style="line-height: 150%;">'' || REPLACE(c.note, CHR(10) || CHR(10), ''</p><p style="line-height: 150%;">'') || ''</p>'');',
-'END LOOP;',
-''))
-,p_plug_source_type=>'NATIVE_PLSQL'
-,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
-,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
-,p_plug_display_when_condition=>'P100_TEST_GROUP'
+,p_last_upd_yyyymmddhh24miss=>'20210911111849'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(143433243775904426)
@@ -69,7 +48,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_display_point=>'BODY'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
-,p_plug_display_when_condition=>'P100_TEST_GROUP'
+,p_plug_display_when_condition=>'P100_TOPIC_ID'
 ,p_attribute_01=>'N'
 ,p_attribute_02=>'HTML'
 );
@@ -91,7 +70,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_query_num_rows=>30
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
-,p_plug_display_when_condition=>'P100_TEST_GROUP'
+,p_plug_display_when_condition=>'P100_TOPIC_ID'
 ,p_attribute_01=>'ADVANCED_FORMATTING'
 ,p_attribute_05=>wwv_flow_string.join(wwv_flow_t_varchar2(
 '<span class="&CSS_CLASS.">&TEST_NAME.</span>',
@@ -121,7 +100,7 @@ wwv_flow_api.create_page_plug(
 'FROM quiz_attempts a',
 'JOIN quiz_tests t',
 '    ON t.test_id        = a.test_id',
-'WHERE t.test_topic      = NVL(apex.get_item(''$TEST_GROUP''), t.test_topic)',
+'WHERE t.test_topic      = NVL(apex.get_item(''$TOPIC_ID''), t.test_topic)',
 'GROUP BY a.user_id',
 'ORDER BY 1;',
 ''))
@@ -132,6 +111,22 @@ wwv_flow_api.create_page_plug(
 ,p_attribute_02=>'NAME'
 ,p_attribute_06=>'SUPPLEMENT'
 ,p_attribute_08=>'COUNTER'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(143435639427904450)
+,p_plug_name=>'&P100_BADGE_NAME_HEADER.'
+,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
+,p_plug_template=>wwv_flow_api.id(123590440289713011)
+,p_plug_display_sequence=>60
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_new_grid_row=>false
+,p_plug_display_point=>'BODY'
+,p_query_type=>'TABLE'
+,p_query_table=>'QUIZ_TOPICS'
+,p_include_rowid_column=>false
+,p_is_editable=>false
+,p_plug_source_type=>'NATIVE_FORM'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(262636895176854000)
@@ -156,7 +151,7 @@ wwv_flow_api.create_page_plug(
 ''))
 ,p_attribute_07=>'&SUPPLEMENTAL.'
 ,p_attribute_08=>'COUNTER'
-,p_attribute_16=>'f?p=&APP_ID.:100:&SESSION.::&DEBUG.::P100_TEST_GROUP:&TOPIC_ID.'
+,p_attribute_16=>'f?p=&APP_ID.:100:&SESSION.::&DEBUG.::P100_TOPIC_ID:&TOPIC_ID.'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(268704768338579914)
@@ -186,14 +181,6 @@ wwv_flow_api.create_page_button(
 ,p_button_cattributes=>'style="margin: 2rem 0 0;"'
 );
 wwv_flow_api.create_page_item(
- p_id=>wwv_flow_api.id(143432627833904420)
-,p_name=>'P100_TEST_GROUP'
-,p_item_sequence=>10
-,p_item_plug_id=>wwv_flow_api.id(262636895176854000)
-,p_display_as=>'NATIVE_HIDDEN'
-,p_attribute_01=>'Y'
-);
-wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(143433096446904424)
 ,p_name=>'P100_BOOKMARKED_COUNT'
 ,p_item_sequence=>30
@@ -210,8 +197,103 @@ wwv_flow_api.create_page_item(
 ,p_attribute_01=>'Y'
 );
 wwv_flow_api.create_page_item(
- p_id=>wwv_flow_api.id(143433743077904431)
+ p_id=>wwv_flow_api.id(156718875345686202)
+,p_name=>'P100_TOPIC_ID'
+,p_source_data_type=>'VARCHAR2'
+,p_is_primary_key=>true
+,p_item_sequence=>10
+,p_item_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_item_source_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_source=>'TOPIC_ID'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_HIDDEN'
+,p_is_persistent=>'N'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(156718986847686203)
+,p_name=>'P100_TOPIC_NAME'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_item_source_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_source=>'TOPIC_NAME'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_HIDDEN'
+,p_is_persistent=>'N'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(156719036178686204)
 ,p_name=>'P100_BADGE_NAME'
+,p_source_data_type=>'VARCHAR2'
+,p_is_query_only=>true
+,p_item_sequence=>30
+,p_item_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_item_source_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_source=>'BADGE_NAME'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_HIDDEN'
+,p_is_persistent=>'N'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(156719111298686205)
+,p_name=>'P100_NOTE'
+,p_source_data_type=>'VARCHAR2'
+,p_is_query_only=>true
+,p_item_sequence=>60
+,p_item_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_item_source_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_prompt=>'Note'
+,p_source=>'NOTE'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_DISPLAY_ONLY'
+,p_field_template=>wwv_flow_api.id(123651838042713193)
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_escape_on_http_output=>'N'
+,p_attribute_01=>'Y'
+,p_attribute_02=>'VALUE'
+,p_attribute_04=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(156719231904686206)
+,p_name=>'P100_BADGE_FILE'
+,p_source_data_type=>'BLOB'
+,p_is_query_only=>true
+,p_item_sequence=>50
+,p_item_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_item_source_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_prompt=>'Badge File'
+,p_source=>'BADGE_FILE'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_DISPLAY_IMAGE'
+,p_tag_attributes=>'style="width: 200px !important;"'
+,p_field_template=>wwv_flow_api.id(123651838042713193)
+,p_item_template_options=>'#DEFAULT#'
+,p_is_persistent=>'N'
+,p_attribute_01=>'DB_COLUMN'
+,p_attribute_04=>'BADGE_NAME'
+,p_attribute_05=>'CREATED_AT'
+,p_attribute_07=>'BADGE_MIME'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(156719307669686207)
+,p_name=>'P100_BADGE_MIME'
+,p_source_data_type=>'VARCHAR2'
+,p_item_sequence=>40
+,p_item_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_item_source_plug_id=>wwv_flow_api.id(143435639427904450)
+,p_source=>'BADGE_MIME'
+,p_source_type=>'REGION_SOURCE_COLUMN'
+,p_display_as=>'NATIVE_HIDDEN'
+,p_is_persistent=>'N'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(156719670879686210)
+,p_name=>'P100_BADGE_NAME_HEADER'
 ,p_item_sequence=>40
 ,p_item_plug_id=>wwv_flow_api.id(262636895176854000)
 ,p_display_as=>'NATIVE_HIDDEN'
@@ -231,21 +313,21 @@ wwv_flow_api.create_page_computation(
 '    AND a.test_id       IN (',
 '        SELECT t.test_id',
 '        FROM quiz_tests t',
-'        WHERE t.test_topic      = apex.get_item(''$TEST_GROUP'')',
+'        WHERE t.test_topic      = apex.get_item(''$TOPIC_ID'')',
 '            AND t.test_name     != ''BOOKMARKED''',
 '    );',
 ''))
 );
 wwv_flow_api.create_page_computation(
- p_id=>wwv_flow_api.id(143433821407904432)
+ p_id=>wwv_flow_api.id(156719511666686209)
 ,p_computation_sequence=>20
-,p_computation_item=>'P100_BADGE_NAME'
+,p_computation_item=>'P100_BADGE_NAME_HEADER'
 ,p_computation_point=>'AFTER_HEADER'
 ,p_computation_type=>'QUERY'
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT t.badge_name',
 'FROM quiz_topics t',
-'WHERE t.topic_id = apex.get_item(''$TEST_GROUP'');',
+'WHERE t.topic_id = apex.get_item(''$TOPIC_ID'');',
 ''))
 );
 wwv_flow_api.create_page_computation(
@@ -260,7 +342,7 @@ wwv_flow_api.create_page_computation(
 'JOIN quiz_tests t',
 '    ON t.test_id        = a.test_id',
 'WHERE a.user_id         = sess.get_user_id()',
-'    AND t.test_topic    = apex.get_item(''$TEST_GROUP'');',
+'    AND t.test_topic    = apex.get_item(''$TOPIC_ID'');',
 ''))
 );
 wwv_flow_api.create_page_process(
@@ -271,7 +353,7 @@ wwv_flow_api.create_page_process(
 ,p_process_name=>'CREATE_BOOKMARKED'
 ,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'quiz.create_bookmarked_test (',
-'    in_test_group       => apex.get_item(''$TEST_GROUP''),',
+'    in_topic_id         => apex.get_item(''$TOPIC_ID''),',
 '    in_user_id          => sess.get_user_id()',
 ');',
 ''))
@@ -279,6 +361,15 @@ wwv_flow_api.create_page_process(
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 ,p_process_when_button_id=>wwv_flow_api.id(143432941306904423)
 ,p_process_success_message=>'Test from bookmarked questions created/updated'
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(156718792050686201)
+,p_process_sequence=>10
+,p_process_point=>'BEFORE_HEADER'
+,p_region_id=>wwv_flow_api.id(143435639427904450)
+,p_process_type=>'NATIVE_FORM_INIT'
+,p_process_name=>'INIT_FORM'
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 );
 wwv_flow_api.component_end;
 end;

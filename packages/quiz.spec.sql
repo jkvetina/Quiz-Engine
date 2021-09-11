@@ -44,7 +44,7 @@ CREATE OR REPLACE PACKAGE quiz AS
 
 
     PROCEDURE create_bookmarked_test (
-        in_test_group       quiz_tests.test_topic%TYPE,
+        in_topic_id         quiz_tests.test_topic%TYPE,
         in_user_id          quiz_attempts.user_id%TYPE
     );
 

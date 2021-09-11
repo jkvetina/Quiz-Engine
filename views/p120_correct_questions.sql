@@ -15,7 +15,7 @@ FROM (
         ON t.test_id        = q.test_id
     WHERE (
         q.test_id           = apex.get_item('$TEST_ID')
-        OR t.test_topic     = apex.get_item('$TEST_GROUP')
+        OR t.test_topic     = apex.get_item('$TOPIC_ID')
     )
 ) q;
 

@@ -33,7 +33,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             WHERE t.test_id         = apex.get_item('$TEST_ID')
         ) LOOP
             apex.set_item('$TEST_NAME',     c.test_name);
-            apex.set_item('$TEST_GROUP',    c.test_topic);
+            apex.set_item('$TOPIC_ID',      c.test_topic);
         END LOOP;
         --
         FOR c IN (
@@ -544,7 +544,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         SELECT MAX(t.test_id) INTO new_test_id
         FROM quiz_tests t
         WHERE t.test_name       = in_test_name
-            AND t.test_topic    = in_test_group
+            AND t.test_topic    = in_topic_id
             AND t.dedicated_to  = in_user_id;
 
         -- delete previous test
@@ -560,7 +560,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         VALUES (
             new_test_id,
             in_test_name,
-            in_test_group,
+            in_topic_id,
             in_user_id,
             SYSDATE
         );
@@ -577,7 +577,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 AND a.test_id       IN (
                     SELECT t.test_id
                     FROM quiz_tests t
-                    WHERE t.test_topic      = in_test_group
+                    WHERE t.test_topic      = in_topic_id
                         AND t.test_name     != in_test_name
                 )
             ORDER BY a.test_id, a.question_id
