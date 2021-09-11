@@ -35,7 +35,7 @@ wwv_flow_api.create_page(
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210911111849'
+,p_last_upd_yyyymmddhh24miss=>'20210911152342'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(143433243775904426)
@@ -127,6 +127,8 @@ wwv_flow_api.create_page_plug(
 ,p_is_editable=>false
 ,p_plug_source_type=>'NATIVE_FORM'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
+,p_plug_display_when_condition=>'P100_TOPIC_ID'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(262636895176854000)
@@ -331,10 +333,26 @@ wwv_flow_api.create_page_computation(
 ''))
 );
 wwv_flow_api.create_page_computation(
- p_id=>wwv_flow_api.id(143433635334904430)
+ p_id=>wwv_flow_api.id(156720591448686219)
 ,p_computation_sequence=>10
+,p_computation_item=>'P100_TOPIC_ID'
+,p_computation_point=>'BEFORE_HEADER'
+,p_computation_type=>'QUERY'
+,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT MIN(t.test_topic) KEEP (DENSE_RANK FIRST ORDER BY a.updated_at DESC) AS last_topic',
+'FROM quiz_attempts a',
+'JOIN quiz_tests t',
+'    ON t.test_id        = a.test_id',
+'WHERE a.user_id         = sess.get_user_id();',
+''))
+,p_compute_when=>'P100_TOPIC_ID'
+,p_compute_when_type=>'ITEM_IS_NULL'
+);
+wwv_flow_api.create_page_computation(
+ p_id=>wwv_flow_api.id(143433635334904430)
+,p_computation_sequence=>20
 ,p_computation_item=>'P100_TEST_ID'
-,p_computation_point=>'BEFORE_BOX_BODY'
+,p_computation_point=>'BEFORE_HEADER'
 ,p_computation_type=>'QUERY'
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT MIN(a.test_id) KEEP (DENSE_RANK FIRST ORDER BY a.updated_at DESC) AS last_test',
