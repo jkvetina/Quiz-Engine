@@ -130,7 +130,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             FROM quiz_answers a
             WHERE a.test_id       = apex.get_item('$TEST_ID')
                 AND a.question_id = apex.get_item('$QUESTION_ID')
-                AND a.is_correct  IN ('X', 'Y')
+                AND a.is_correct  = 'Y'
         ) LOOP
             apex.set_item('$EXPECTED', c.answers);
         END LOOP;
@@ -142,10 +142,10 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
 
     PROCEDURE process_answer (
-        in_answer       VARCHAR2,
-        in_bookmarked   VARCHAR2
+        in_answer           VARCHAR2,
+        in_bookmarked       VARCHAR2
     ) AS
-        rec             quiz_attempts%ROWTYPE;
+        rec                 quiz_attempts%ROWTYPE;
     BEGIN
         rec.user_id         := sess.get_user_id();
         rec.test_id         := apex.get_item('$TEST_ID');
@@ -153,6 +153,30 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         rec.updated_at      := SYSDATE;
         rec.is_bookmarked   := NULLIF(in_bookmarked, 'N');
         rec.counter         := 1;
+
+        -- fix answers feature
+        IF APEX_APPLICATION.G_REQUEST = 'FIX_ANSWERS' THEN  -- button name in APEX
+            -- clear current answers
+            UPDATE quiz_answers a
+            SET a.is_correct        = NULL
+            WHERE a.test_id         = rec.test_id
+                AND a.question_id   = rec.question_id;
+
+            -- add new answers
+            FOR c IN (
+                SELECT REGEXP_SUBSTR(':' || in_answer || ':', '([^:]+)', 1, LEVEL) AS answer
+                FROM DUAL
+                CONNECT BY LEVEL <= REGEXP_COUNT(in_answer, '[:]') + 1
+            ) LOOP
+                UPDATE quiz_answers a
+                SET a.is_correct        = 'Y'
+                WHERE a.test_id         = rec.test_id
+                    AND a.question_id   = rec.question_id
+                    AND a.answer_id     = c.answer;
+                --
+                tree.log_warning('FIX_ANSWERS', rec.test_id, rec.question_id, c.answer, SQL%ROWCOUNT);
+            END LOOP;
+        END IF;
 
         -- reorder answers
         SELECT LISTAGG(a.answer, ':') WITHIN GROUP (ORDER BY a.answer) INTO rec.answers
@@ -170,7 +194,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             FROM quiz_answers a
             WHERE a.test_id         = rec.test_id
                 AND a.question_id   = rec.question_id
-                AND a.is_correct    IN ('X', 'Y')
+                AND a.is_correct    = 'Y'
         );
 
         -- mark incorrect answer for repetition

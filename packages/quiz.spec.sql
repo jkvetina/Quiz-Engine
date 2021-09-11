@@ -5,8 +5,8 @@ CREATE OR REPLACE PACKAGE quiz AS
 
 
     PROCEDURE process_answer (
-        in_answer       VARCHAR2,
-        in_bookmarked   VARCHAR2
+        in_answer           VARCHAR2,
+        in_bookmarked       VARCHAR2
     );
 
 

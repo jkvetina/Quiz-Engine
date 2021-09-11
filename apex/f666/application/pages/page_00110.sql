@@ -52,7 +52,7 @@ wwv_flow_api.create_page(
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210626145056'
+,p_last_upd_yyyymmddhh24miss=>'20210911091223'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(119237602062121148)
@@ -108,7 +108,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_name=>'Bookmarked Questions (&P110_BOOKMARKED_PERC.%)'
 ,p_region_template_options=>'#DEFAULT#:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>40
+,p_plug_display_sequence=>50
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_new_grid_row=>false
 ,p_plug_grid_column_span=>3
@@ -178,7 +178,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_name=>'Unanswered Questions (&P110_UNANSWERED_PERC.%)'
 ,p_region_template_options=>'#DEFAULT#:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>50
+,p_plug_display_sequence=>60
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_new_grid_row=>false
 ,p_plug_grid_column_span=>3
@@ -247,6 +247,23 @@ wwv_flow_api.create_card_action(
 ,p_link_target_type=>'REDIRECT_PAGE'
 ,p_link_target=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_BOOKMARKED,P110_ANSWER,P110_ERROR,P110_SKIP_CORRECT:&TEST_ID.,&QUESTION_ID.,N,,,Y'
 );
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(143434289536904436)
+,p_plug_name=>'Correct Wrong Anwers'
+,p_region_template_options=>'#DEFAULT#:t-Region--noBorder:t-Region--scrollBody'
+,p_plug_template=>wwv_flow_api.id(123590440289713011)
+,p_plug_display_sequence=>40
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_new_grid_row=>false
+,p_plug_new_grid_column=>false
+,p_plug_display_point=>'BODY'
+,p_plug_source=>'When you submit page with following button it will change correct answers to selected ones.'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_plug_display_condition_type=>'ITEM_IS_NOT_NULL'
+,p_plug_display_when_condition=>'P110_SHOW_CORRECT_FLAG'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(138600171193602708)
 ,p_button_sequence=>10
@@ -275,6 +292,20 @@ wwv_flow_api.create_page_button(
 ,p_button_condition=>'P110_SHOW_CORRECT_FLAG'
 ,p_button_condition_type=>'ITEM_IS_NULL'
 ,p_button_cattributes=>'style="margin: 2rem 1.5rem 0 0;" title="Expecting: &P110_EXPECTED. answer(s)"'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(143434495252904438)
+,p_button_sequence=>10
+,p_button_plug_id=>wwv_flow_api.id(143434289536904436)
+,p_button_name=>'FIX_ANSWERS'
+,p_button_action=>'SUBMIT'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(123652925875713205)
+,p_button_is_hot=>'Y'
+,p_button_image_alt=>'Fix Answers'
+,p_button_position=>'BELOW_BOX'
+,p_button_cattributes=>'style="margin: 2rem 0 0 1.5rem;"'
+,p_database_action=>'UPDATE'
 );
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(138600422622602711)
