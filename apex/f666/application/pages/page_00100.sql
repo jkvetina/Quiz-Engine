@@ -25,7 +25,7 @@ wwv_flow_api.create_page(
 '}'))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210726095901'
+,p_last_upd_yyyymmddhh24miss=>'20210815055433'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(143432731519904421)
@@ -145,6 +145,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_display_point=>'BODY'
 ,p_query_type=>'TABLE'
 ,p_query_table=>'P100_TOPICS'
+,p_query_order_by=>'TOPIC_ID'
 ,p_include_rowid_column=>false
 ,p_plug_source_type=>'NATIVE_JQM_LIST_VIEW'
 ,p_plug_query_num_rows=>30
