@@ -52,7 +52,7 @@ wwv_flow_api.create_page(
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210911144730'
+,p_last_upd_yyyymmddhh24miss=>'20210911210018'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(119237602062121148)
@@ -294,17 +294,18 @@ wwv_flow_api.create_page_button(
 ,p_button_cattributes=>'style="margin: 2rem 1.5rem 0 0;" title="Expecting: &P110_EXPECTED. answer(s)"'
 );
 wwv_flow_api.create_page_button(
- p_id=>wwv_flow_api.id(143434495252904438)
+ p_id=>wwv_flow_api.id(156720819081686222)
 ,p_button_sequence=>10
 ,p_button_plug_id=>wwv_flow_api.id(143434289536904436)
-,p_button_name=>'FIX_ANSWERS'
-,p_button_action=>'SUBMIT'
+,p_button_name=>'EDIT_QUESTION'
+,p_button_action=>'REDIRECT_PAGE'
 ,p_button_template_options=>'#DEFAULT#'
-,p_button_template_id=>wwv_flow_api.id(123652925875713205)
-,p_button_image_alt=>'Fix Answers'
+,p_button_template_id=>wwv_flow_api.id(123652233540713199)
+,p_button_image_alt=>'Edit Question'
 ,p_button_position=>'BELOW_BOX'
+,p_button_redirect_url=>'f?p=&APP_ID.:210:&SESSION.::&DEBUG.:CR,:P210_TEST_ID,P210_QUESTION_ID:&P110_TEST_ID.,&P110_QUESTION_ID.'
+,p_icon_css_classes=>'fa-edit'
 ,p_button_cattributes=>'style="margin: 2rem 0 0 1.5rem;"'
-,p_database_action=>'UPDATE'
 );
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(138600422622602711)
@@ -334,6 +335,19 @@ wwv_flow_api.create_page_button(
 ,p_button_condition=>'P110_SHOW_CORRECT_FLAG'
 ,p_button_condition_type=>'ITEM_IS_NOT_NULL'
 ,p_button_cattributes=>'style="margin: 2rem 1.5rem 0 0;"'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(143434495252904438)
+,p_button_sequence=>20
+,p_button_plug_id=>wwv_flow_api.id(143434289536904436)
+,p_button_name=>'FIX_ANSWERS'
+,p_button_action=>'SUBMIT'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(123652925875713205)
+,p_button_image_alt=>'Overwrite Answers'
+,p_button_position=>'BELOW_BOX'
+,p_button_cattributes=>'style="margin: 2rem 0 0 1.5rem;"'
+,p_database_action=>'UPDATE'
 );
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(156720125706686215)

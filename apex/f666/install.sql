@@ -46,6 +46,7 @@ prompt --install
 @@application/shared_components/user_interface/templates/region/tabs_container.sql
 @@application/shared_components/user_interface/templates/region/title_bar.sql
 @@application/shared_components/user_interface/templates/region/wizard_container.sql
+@@application/shared_components/user_interface/templates/region/interactive_report_q.sql
 @@application/shared_components/user_interface/templates/list/badge_list.sql
 @@application/shared_components/user_interface/templates/list/cards.sql
 @@application/shared_components/user_interface/templates/list/media_list.sql
