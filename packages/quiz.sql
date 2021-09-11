@@ -2,6 +2,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
     PROCEDURE prepare_items AS
     BEGIN
+        tree.log_module();
+
         -- find first empty, then bookmarked question
         IF apex.get_item('$QUESTION_ID') IS NULL THEN
             apex.set_item('$QUESTION_ID', quiz.get_prev_next_question (
@@ -137,6 +139,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
         -- clear items after init
         apex.set_item('$SHOW_CORRECT', '');
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
     END;
 
 
@@ -147,6 +154,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     ) AS
         rec                 quiz_attempts%ROWTYPE;
     BEGIN
+        tree.log_module(in_answer, in_bookmarked);
+        --
         rec.user_id         := sess.get_user_id();
         rec.test_id         := apex.get_item('$TEST_ID');
         rec.question_id     := apex.get_item('$QUESTION_ID');
@@ -254,6 +263,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             apex.set_item('$BOOKMARKED',    '');
             apex.set_item('$ERROR',         '');
         END IF;
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
     END;
 
 
@@ -262,6 +276,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     AS
         first_question      quiz_questions.question_id%TYPE := 0;
     BEGIN
+        tree.log_module();
+        --
         FOR c IN (
             SELECT a.question_id, a.ROWID AS rid
             FROM quiz_questions q
@@ -296,6 +312,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             in_names    => 'P' || sess.get_page_id() || '_QUESTION_ID,P' || sess.get_page_id() || '_SKIP_CORRECT',
             in_values   => first_question || ',Y'
         );
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
     END;
 
 
@@ -304,6 +325,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     AS
         first_question      quiz_questions.question_id%TYPE := 0;
     BEGIN
+        tree.log_module();
+        --
         DELETE FROM quiz_attempts a
         WHERE a.user_id         = sess.get_user_id()
             AND a.test_id       = apex.get_item('$TEST_ID')
@@ -325,6 +348,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             in_names    => 'P' || sess.get_page_id() || '_QUESTION_ID,P' || sess.get_page_id() || '_SKIP_CORRECT',
             in_values   => first_question || ',Y'
         );
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
     END;
 
 
@@ -341,6 +369,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     AS
         out_id              quiz_questions.question_id%TYPE;
     BEGIN
+        tree.log_module(in_test_id, in_question_id, in_bookmarked, in_unanswered, in_direction, in_user_id);
+        --
         SELECT
             CASE
                 WHEN in_direction = 'PREV' THEN MAX(q.question_id)
@@ -366,6 +396,10 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
         NULL;
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
     END;
 
 
@@ -418,6 +452,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         END;
         --
     BEGIN
+        tree.log_module(in_test_id);
+        --
         FOR c IN (
             SELECT t.*
             FROM quiz_tests t
@@ -513,6 +549,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 END IF;
             END LOOP;
         END LOOP;
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
     END;
 
 
@@ -521,17 +562,24 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         in_test_id          quiz_tests.test_id%TYPE
     ) AS
     BEGIN
+        tree.log_module(in_test_id);
+
         -- delete previous test
         DELETE FROM quiz_attempts   WHERE test_id = in_test_id;
         DELETE FROM quiz_answers    WHERE test_id = in_test_id;
         DELETE FROM quiz_questions  WHERE test_id = in_test_id;
         DELETE FROM quiz_tests      WHERE test_id = in_test_id;
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
     END;
 
 
 
     PROCEDURE create_bookmarked_test (
-        in_test_group       quiz_tests.test_topic%TYPE,
+        in_topic_id       quiz_tests.test_topic%TYPE,
         in_user_id          quiz_attempts.user_id%TYPE
     )
     AS
@@ -540,6 +588,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         new_test_id         quiz_tests.test_id%TYPE;
         new_question_id     quiz_questions.question_id%TYPE         := 0;
     BEGIN
+        tree.log_module(in_topic_id, in_user_id);
+
         -- check if test exists
         SELECT MAX(t.test_id) INTO new_test_id
         FROM quiz_tests t
@@ -610,6 +660,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 );
             END LOOP;
         END LOOP;
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
     END;
 
 END;
