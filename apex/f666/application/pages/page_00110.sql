@@ -52,7 +52,7 @@ wwv_flow_api.create_page(
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210911111614'
+,p_last_upd_yyyymmddhh24miss=>'20210911144730'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(119237602062121148)
@@ -336,29 +336,46 @@ wwv_flow_api.create_page_button(
 ,p_button_cattributes=>'style="margin: 2rem 1.5rem 0 0;"'
 );
 wwv_flow_api.create_page_button(
- p_id=>wwv_flow_api.id(125300176469847008)
+ p_id=>wwv_flow_api.id(156720125706686215)
 ,p_button_sequence=>30
+,p_button_plug_id=>wwv_flow_api.id(125299989539847006)
+,p_button_name=>'BACK'
+,p_button_action=>'DEFINED_BY_DA'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(123652925875713205)
+,p_button_image_alt=>'Back'
+,p_button_position=>'BELOW_BOX'
+,p_button_execute_validations=>'N'
+,p_warn_on_unsaved_changes=>null
+,p_icon_css_classes=>'fa-chevron-left'
+,p_button_cattributes=>'style="margin: 2rem 0 0 1.5rem;"'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(125300176469847008)
+,p_button_sequence=>40
 ,p_button_plug_id=>wwv_flow_api.id(125299989539847006)
 ,p_button_name=>'PREV'
 ,p_button_action=>'SUBMIT'
 ,p_button_template_options=>'#DEFAULT#'
-,p_button_template_id=>wwv_flow_api.id(123652925875713205)
-,p_button_image_alt=>'Prev'
+,p_button_template_id=>wwv_flow_api.id(123652233540713199)
+,p_button_image_alt=>'Previous Question'
 ,p_button_position=>'BELOW_BOX'
+,p_icon_css_classes=>'fa-arrow-left'
 ,p_button_cattributes=>'style="margin: 2rem 0 0 1.5rem;"'
 ,p_database_action=>'INSERT'
 );
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(125300026494847007)
-,p_button_sequence=>40
+,p_button_sequence=>50
 ,p_button_plug_id=>wwv_flow_api.id(125299989539847006)
 ,p_button_name=>'NEXT'
 ,p_button_action=>'SUBMIT'
-,p_button_template_options=>'#DEFAULT#'
-,p_button_template_id=>wwv_flow_api.id(123652925875713205)
+,p_button_template_options=>'#DEFAULT#:t-Button--iconRight'
+,p_button_template_id=>wwv_flow_api.id(123653030927713205)
 ,p_button_is_hot=>'Y'
 ,p_button_image_alt=>'Next'
 ,p_button_position=>'BELOW_BOX'
+,p_icon_css_classes=>'fa-arrow-right'
 ,p_button_cattributes=>'style="margin: 2rem 0 0 1.5rem;"'
 ,p_database_action=>'INSERT'
 );
@@ -573,6 +590,24 @@ wwv_flow_api.create_page_da_action(
 '    unsafe:     true',
 '}]);',
 ''))
+);
+wwv_flow_api.create_page_da_event(
+ p_id=>wwv_flow_api.id(156720330901686217)
+,p_name=>'GO_BACK'
+,p_event_sequence=>20
+,p_triggering_element_type=>'BUTTON'
+,p_triggering_button_id=>wwv_flow_api.id(156720125706686215)
+,p_bind_type=>'bind'
+,p_bind_event_type=>'click'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(156720495369686218)
+,p_event_id=>wwv_flow_api.id(156720330901686217)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_JAVASCRIPT_CODE'
+,p_attribute_01=>'window.history.back();'
 );
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(138600208045602709)
