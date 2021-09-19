@@ -141,6 +141,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
         -- clear items after init
         apex.set_item('$SHOW_CORRECT', '');
+        --
+        tree.update_timer();
     EXCEPTION
     WHEN tree.app_exception THEN
         RAISE;
@@ -282,6 +284,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             apex.set_item('$BOOKMARKED',    '');
             apex.set_item('$ERROR',         '');
         END IF;
+        --
+        tree.update_timer();
     EXCEPTION
     WHEN tree.app_exception THEN
         RAISE;
@@ -325,6 +329,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             WHERE q.test_id             = apex.get_item('$TEST_ID')
                 AND a.question_id       IS NULL;
         END IF;
+        --
+        tree.update_timer();
 
         -- set first empty question
         apex.redirect (
@@ -361,6 +367,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         SELECT MIN(q.question_id) INTO first_question
         FROM quiz_questions q
         WHERE q.test_id             = apex.get_item('$TEST_ID');
+        --
+        tree.update_timer();
 
         -- set first empty question
         apex.redirect (
@@ -596,6 +604,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 END IF;
             END LOOP;
         END LOOP;
+        --
+        tree.update_timer();
     EXCEPTION
     WHEN tree.app_exception THEN
         RAISE;
@@ -616,6 +626,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         DELETE FROM quiz_answers    WHERE test_id = in_test_id;
         DELETE FROM quiz_questions  WHERE test_id = in_test_id;
         DELETE FROM quiz_tests      WHERE test_id = in_test_id;
+        --
+        tree.update_timer();
     EXCEPTION
     WHEN tree.app_exception THEN
         RAISE;
