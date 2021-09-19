@@ -28,9 +28,10 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         apex.set_item('$ANSWER',            '');
         apex.set_item('$EXPLANATION',       '');
         apex.set_item('$SHOW_CORRECT_FLAG', '');
+        apex.set_item('$TO_VERIFY',         '');
         --
         FOR c IN (
-            SELECT t.*
+            SELECT t.test_name, t.test_topic
             FROM quiz_tests t
             WHERE t.test_id         = apex.get_item('$TEST_ID')
         ) LOOP
@@ -39,13 +40,14 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         END LOOP;
         --
         FOR c IN (
-            SELECT q.*
+            SELECT q.question, q.explanation, q.is_to_verify
             FROM quiz_questions q
             WHERE q.test_id         = apex.get_item('$TEST_ID')
                 AND q.question_id   = apex.get_item('$QUESTION_ID')
         ) LOOP
             apex.set_item('$QUESTION',      c.question);
             apex.set_item('$EXPLANATION',   c.explanation);
+            apex.set_item('$TO_VERIFY',     c.is_to_verify);
         END LOOP;
         --
         FOR c IN (
@@ -64,7 +66,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 AND a.test_id       = apex.get_item('$TEST_ID')
                 AND a.question_id   = apex.get_item('$QUESTION_ID')
         ) LOOP
-            apex.set_item('$BOOKMARKED', c.is_bookmarked);
+            apex.set_item('$BOOKMARKED',    c.is_bookmarked);
             --
             IF NVL(c.is_bookmarked, '-') != 'Y' THEN
             --IF (NVL(c.is_bookmarked, '-') != 'Y' OR apex.get_item('$ERROR') IS NOT NULL) THEN
@@ -150,17 +152,18 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
     PROCEDURE process_answer (
         in_answer           VARCHAR2,
-        in_bookmarked       VARCHAR2
+        in_bookmarked       quiz_attempts.is_bookmarked%TYPE,
+        in_to_verify        quiz_questions.is_to_verify%TYPE
     ) AS
         rec                 quiz_attempts%ROWTYPE;
     BEGIN
-        tree.log_module(in_answer, in_bookmarked);
+        tree.log_module(APEX_APPLICATION.G_REQUEST, in_answer, in_bookmarked, in_to_verify);
         --
         rec.user_id         := sess.get_user_id();
         rec.test_id         := apex.get_item('$TEST_ID');
         rec.question_id     := apex.get_item('$QUESTION_ID');
         rec.updated_at      := SYSDATE;
-        rec.is_bookmarked   := NULLIF(in_bookmarked, 'N');
+        rec.is_bookmarked   := NULLIF(in_bookmarked,    'N');
         rec.counter         := 1;
 
         -- fix answers feature
@@ -185,6 +188,22 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 --
                 tree.log_warning('FIX_ANSWERS', rec.test_id, rec.question_id, c.answer, SQL%ROWCOUNT);
             END LOOP;
+
+            -- clear verify flag
+            IF NULLIF(in_to_verify, 'N') IS NULL THEN
+                UPDATE quiz_questions q
+                SET q.is_to_verify      = NULL
+                WHERE q.test_id         = rec.test_id
+                    AND q.question_id   = rec.question_id;
+            END IF;
+        END IF;
+
+        -- set verify flag
+        IF in_to_verify = 'Y' THEN
+            UPDATE quiz_questions q
+            SET q.is_to_verify      = 'Y'
+            WHERE q.test_id         = rec.test_id
+                AND q.question_id   = rec.question_id;
         END IF;
 
         -- reorder answers
@@ -362,7 +381,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         in_question_id      quiz_questions.question_id%TYPE,
         in_bookmarked       CHAR                                := 'Y',
         in_unanswered       CHAR                                := 'Y',
-        in_direction        VARCHAR2                            := 'NEXT',
+        in_direction        VARCHAR2                            := quiz.next_button,
         in_user_id          VARCHAR2                            := NULL
     )
     RETURN quiz_questions.question_id%TYPE
@@ -370,11 +389,39 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         out_id              quiz_questions.question_id%TYPE;
     BEGIN
         tree.log_module(in_test_id, in_question_id, in_bookmarked, in_unanswered, in_direction, in_user_id);
+
+        -- find questions next on the list
+        IF in_direction = next_all_button THEN
+            SELECT MIN(q.question_id) INTO out_id
+            FROM quiz_questions q
+            LEFT JOIN quiz_attempts a
+                ON a.user_id            = COALESCE(in_user_id, sess.get_user_id())
+                AND a.test_id           = q.test_id
+                AND a.question_id       = q.question_id
+            WHERE q.test_id             = in_test_id
+                AND q.question_id       > in_question_id;
+            --
+            RETURN out_id;
+        END IF;
         --
+        IF in_direction = prev_all_button THEN
+            SELECT MAX(q.question_id) INTO out_id
+            FROM quiz_questions q
+            LEFT JOIN quiz_attempts a
+                ON a.user_id            = COALESCE(in_user_id, sess.get_user_id())
+                AND a.test_id           = q.test_id
+                AND a.question_id       = q.question_id
+            WHERE q.test_id             = in_test_id
+                AND q.question_id       < in_question_id;
+            --
+            RETURN out_id;
+        END IF;
+
+        -- find empty or bookmarked questions
         SELECT
             CASE
-                WHEN in_direction = 'PREV' THEN MAX(q.question_id)
-                WHEN in_direction = 'NEXT' THEN MIN(q.question_id)
+                WHEN in_direction = quiz.prev_button THEN MAX(q.question_id)
+                WHEN in_direction = quiz.next_button THEN MIN(q.question_id)
                 END INTO out_id
         FROM quiz_questions q
         LEFT JOIN quiz_attempts a
@@ -383,8 +430,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             AND a.question_id       = q.question_id
         WHERE q.test_id             = in_test_id
             AND 1 = CASE
-                WHEN in_direction = 'PREV' AND q.question_id < in_question_id THEN 1
-                WHEN in_direction = 'NEXT' AND q.question_id > in_question_id THEN 1
+                WHEN in_direction = quiz.prev_button AND q.question_id < in_question_id THEN 1
+                WHEN in_direction = quiz.next_button AND q.question_id > in_question_id THEN 1
                 ELSE 0 END
             AND 1 = CASE
                 WHEN in_unanswered = 'Y'                AND a.answers                   IS NULL THEN 1

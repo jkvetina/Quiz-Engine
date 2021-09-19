@@ -35,7 +35,7 @@ wwv_flow_api.create_page(
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210911152342'
+,p_last_upd_yyyymmddhh24miss=>'20210919074918'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(143433243775904426)
@@ -75,7 +75,9 @@ wwv_flow_api.create_page_plug(
 ,p_attribute_05=>wwv_flow_string.join(wwv_flow_t_varchar2(
 '<span class="&CSS_CLASS.">&TEST_NAME.</span>',
 ''))
-,p_attribute_07=>'&SUPPLEMENTAL.'
+,p_attribute_07=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'&SUPPLEMENTAL.',
+'<br />&TO_VERIFY.'))
 ,p_attribute_08=>'COUNT_'
 ,p_attribute_16=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.::P110_TEST_ID,P110_QUESTION_ID,P110_ERROR,P110_SKIP_CORRECT,P110_BOOKMARKED,P110_ANSWER:&TEST_ID.,,,Y,N,'
 );

@@ -7,6 +7,8 @@ SELECT
         NVL(FLOOR(100 * (t.is_correct / t.questions)), 0) || '% completed'
         AS supplemental,
     --
+    CASE WHEN t.is_to_verify > 0 THEN t.is_to_verify || ' to verify' END AS to_verify,
+    --
     CASE WHEN t.is_correct > 0
         THEN NVL(FLOOR(100 - 100 * (t.is_bookmarked / t.questions)), 0) || '%'
         END AS count_,
@@ -22,6 +24,7 @@ FROM (
         SUM(CASE WHEN q.explanation     IS NOT NULL THEN 1 ELSE 0 END)  AS explanations,
         SUM(CASE WHEN a.is_correct      = 'Y'       THEN 1 ELSE 0 END)  AS is_correct,
         SUM(CASE WHEN a.is_bookmarked   = 'Y'       THEN 1 ELSE 0 END)  AS is_bookmarked,
+        COUNT(q.is_to_verify)                                           AS is_to_verify,
         t.dedicated_to
     FROM quiz_questions q
     JOIN quiz_tests t
