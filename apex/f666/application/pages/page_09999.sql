@@ -16,19 +16,19 @@ wwv_flow_api.create_page(
 ,p_user_interface_id=>wwv_flow_api.id(123675636937713302)
 ,p_name=>'Login Page'
 ,p_alias=>'LOGIN'
-,p_step_title=>'QUIZ - Sign In'
+,p_step_title=>'&APP_NAME.'
 ,p_warn_on_unsaved_changes=>'N'
 ,p_first_item=>'AUTO_FIRST_ITEM'
 ,p_autocomplete_on_off=>'OFF'
 ,p_step_template=>wwv_flow_api.id(123542167213712920)
 ,p_page_template_options=>'#DEFAULT#'
 ,p_page_is_public_y_n=>'Y'
-,p_last_updated_by=>'DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210620075257'
+,p_last_updated_by=>'QUIZ_DEV'
+,p_last_upd_yyyymmddhh24miss=>'20210919133216'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(123679605749713385)
-,p_plug_name=>'&PP_NAME.'
+,p_plug_name=>'&APP_NAME.'
 ,p_icon_css_classes=>'app-icon'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(123589153074713006)
