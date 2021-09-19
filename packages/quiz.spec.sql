@@ -56,5 +56,14 @@ CREATE OR REPLACE PACKAGE quiz AS
         in_user_id          quiz_attempts.user_id%TYPE
     );
 
+
+
+    PROCEDURE save_notes (
+        in_cert_id          plan_certifications_notes.cert_id%TYPE,
+        in_is_done          plan_certifications_notes.is_done%TYPE,
+        in_priority         plan_certifications_notes.priority%TYPE,
+        in_notes            plan_certifications_notes.notes%TYPE
+    );
+
 END;
 /

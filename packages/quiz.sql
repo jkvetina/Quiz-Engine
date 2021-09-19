@@ -707,6 +707,40 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 );
             END LOOP;
         END LOOP;
+        --
+        tree.update_timer();
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
+    END;
+
+
+
+    PROCEDURE save_notes (
+        in_cert_id          plan_certifications_notes.cert_id%TYPE,
+        in_is_done          plan_certifications_notes.is_done%TYPE,
+        in_priority         plan_certifications_notes.priority%TYPE,
+        in_notes            plan_certifications_notes.notes%TYPE
+    ) AS
+    BEGIN
+        tree.log_module(in_cert_id, in_is_done, in_priority, in_notes);
+        --
+        DELETE FROM plan_certifications_notes n
+        WHERE n.user_id     = sess.get_user_id()
+            AND n.cert_id   = in_cert_id;
+        --
+        INSERT INTO plan_certifications_notes (user_id, cert_id, is_done, priority, notes)
+        VALUES (
+            sess.get_user_id(),
+            in_cert_id,
+            in_is_done,
+            in_priority,
+            in_notes
+        );
+        --
+        tree.update_timer();
     EXCEPTION
     WHEN tree.app_exception THEN
         RAISE;
