@@ -30,8 +30,8 @@ wwv_flow_api.create_page(
 '}',
 ''))
 ,p_page_template_options=>'#DEFAULT#'
-,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210911210159'
+,p_last_updated_by=>'JAN.KVETINA@GMAIL.COM'
+,p_last_upd_yyyymmddhh24miss=>'20210913170849'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(138603958930602746)
@@ -655,7 +655,7 @@ wwv_flow_api.create_page_button(
 ,p_button_template_id=>wwv_flow_api.id(123652233540713199)
 ,p_button_image_alt=>'Test Question'
 ,p_button_position=>'RIGHT_OF_TITLE'
-,p_button_redirect_url=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.:CR,:P110_TEST_ID,P110_QUESTION_ID,P110_SHOW_CORRECT:&P210_TEST_ID.,&P210_QUESTION_ID.,Y'
+,p_button_redirect_url=>'f?p=&APP_ID.:110:&SESSION.::&DEBUG.:CR,:P110_TEST_ID,P110_QUESTION_ID,P110_SHOW_CORRECT:&P210_TEST_ID.,&P210_QUESTION_ID.,'
 ,p_icon_css_classes=>'fa-play'
 );
 wwv_flow_api.create_page_item(
