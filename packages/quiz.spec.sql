@@ -67,5 +67,9 @@ CREATE OR REPLACE PACKAGE quiz AS
         in_notes            plan_certifications_notes.notes%TYPE
     );
 
+
+
+    PROCEDURE resort_priorities;
+
 END;
 /

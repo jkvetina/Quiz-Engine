@@ -21,7 +21,7 @@ wwv_flow_api.create_page(
 ,p_group_id=>wwv_flow_api.id(157555888025214138)
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210919133300'
+,p_last_upd_yyyymmddhh24miss=>'20210921201908'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(156722266301686236)
@@ -1226,6 +1226,18 @@ wwv_flow_api.create_page_da_action(
 ,p_attribute_01=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'apex.region(''CERTIFICATIONS_TODO'').refresh();',
 ''))
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(157814270049227904)
+,p_process_sequence=>30
+,p_process_point=>'AFTER_HEADER'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'RESORT'
+,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'quiz.resort_priorities();',
+''))
+,p_process_clob_language=>'PLSQL'
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 );
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(157356273095057717)

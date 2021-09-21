@@ -762,9 +762,38 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             sess.get_user_id(),
             in_cert_id,
             in_is_done,
-            in_priority,
+            CASE WHEN in_is_done = 'Y' THEN NULL ELSE in_priority END,
             in_notes
         );
+        --
+        tree.update_timer();
+    EXCEPTION
+    WHEN tree.app_exception THEN
+        RAISE;
+    WHEN OTHERS THEN
+        tree.raise_error();
+    END;
+
+
+
+    PROCEDURE resort_priorities AS
+    BEGIN
+        tree.log_module();
+        --
+        FOR c IN (
+            SELECT
+                n.cert_id,
+                n.user_id,
+                ROW_NUMBER() OVER (ORDER BY n.priority, n.cert_id) AS priority
+            FROM plan_certifications_notes n
+            WHERE n.user_id     = 'JAN.KVETINA@GMAIL.COM'
+                AND n.priority  IS NOT NULL
+        ) LOOP
+            UPDATE plan_certifications_notes n
+            SET n.priority      = c.priority
+            WHERE n.user_id     = c.user_id
+                AND n.cert_id   = c.cert_id;
+        END LOOP;
         --
         tree.update_timer();
     EXCEPTION
