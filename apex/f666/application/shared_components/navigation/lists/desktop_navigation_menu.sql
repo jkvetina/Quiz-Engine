@@ -25,23 +25,29 @@ wwv_flow_api.create_list_item(
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
 wwv_flow_api.create_list_item(
- p_id=>wwv_flow_api.id(142400148506575653)
+ p_id=>wwv_flow_api.id(157674760706448639)
 ,p_list_item_display_sequence=>20
 ,p_list_item_link_text=>'Correct Answers'
 ,p_list_item_link_target=>'f?p=&APP_ID.:120:&SESSION.::&DEBUG.::::'
-,p_list_item_disp_cond_type=>'EXPRESSION'
-,p_list_item_disp_condition=>'sess.get_page_id() = 110'
+,p_list_item_disp_cond_type=>'FUNCTION_BODY'
+,p_list_item_disp_condition=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'RETURN apex.get_item(''$TEST_ID'') IS NOT NULL AND sess.get_page_id() = 110;',
+''))
 ,p_list_item_disp_condition2=>'PLSQL'
 ,p_parent_list_item_id=>wwv_flow_api.id(123685438105713450)
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
 wwv_flow_api.create_list_item(
- p_id=>wwv_flow_api.id(143400381429727312)
+ p_id=>wwv_flow_api.id(157675226684462604)
 ,p_list_item_display_sequence=>30
-,p_list_item_link_text=>'Management'
-,p_list_item_link_target=>'f?p=&APP_ID.:210:&SESSION.::&DEBUG.::::'
+,p_list_item_link_text=>'Correct Answers'
+,p_list_item_link_target=>'f?p=&APP_ID.:125:&SESSION.::&DEBUG.::::'
+,p_list_item_disp_cond_type=>'FUNCTION_BODY'
+,p_list_item_disp_condition=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'RETURN apex.get_item(''$TOPIC_ID'') IS NOT NULL AND sess.get_page_id() = 100;',
+''))
+,p_list_item_disp_condition2=>'PLSQL'
 ,p_parent_list_item_id=>wwv_flow_api.id(123685438105713450)
-,p_security_scheme=>wwv_flow_api.id(123678145775713360)
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
 wwv_flow_api.create_list_item(
