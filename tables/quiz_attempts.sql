@@ -9,6 +9,7 @@ CREATE TABLE quiz_attempts (
     --
     updated_at      DATE,
     counter         NUMBER(4),
+    private_note    VARCHAR2(4000),
     --
     CONSTRAINT pk_quiz_attempts
         PRIMARY KEY (user_id, test_id, question_id),

@@ -33,7 +33,7 @@ wwv_flow_api.create_flow(
 ,p_authentication_id=>wwv_flow_api.id(143713614190744339)
 ,p_application_tab_set=>0
 ,p_logo_type=>'T'
-,p_logo_text=>'Quiz Engine'
+,p_logo_text=>'&APP_NAME.'
 ,p_app_builder_icon_name=>'app-icon.svg'
 ,p_public_user=>'APEX_PUBLIC_USER'
 ,p_proxy_server=>nvl(wwv_flow_application_install.get_proxy,'')
@@ -52,7 +52,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'Quiz Engine'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210911152342'
+,p_last_upd_yyyymmddhh24miss=>'20210921201908'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>11
 ,p_ui_type_name => null

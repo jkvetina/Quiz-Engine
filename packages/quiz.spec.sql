@@ -14,7 +14,9 @@ CREATE OR REPLACE PACKAGE quiz AS
     PROCEDURE process_answer (
         in_answer           VARCHAR2,
         in_bookmarked       quiz_attempts.is_bookmarked%TYPE,
-        in_to_verify        quiz_questions.is_to_verify%TYPE
+        in_to_verify        quiz_questions.is_to_verify%TYPE,
+        in_public_note      quiz_questions.public_note%TYPE     := NULL,
+        in_private_note     quiz_attempts.private_note%TYPE     := NULL
     );
 
 

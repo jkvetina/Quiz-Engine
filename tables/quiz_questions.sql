@@ -5,6 +5,7 @@ CREATE TABLE quiz_questions (
     question        VARCHAR2(4000)  NOT NULL,
     explanation     VARCHAR2(4000),
     is_to_verify    VARCHAR2(1),
+    public_note     VARCHAR2(4000),
     --
     CONSTRAINT pk_quiz_questions
         PRIMARY KEY (test_id, question_id),

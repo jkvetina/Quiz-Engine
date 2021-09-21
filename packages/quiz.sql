@@ -29,6 +29,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         apex.set_item('$EXPLANATION',       '');
         apex.set_item('$SHOW_CORRECT_FLAG', '');
         apex.set_item('$TO_VERIFY',         '');
+        apex.set_item('$PUBLIC_NOTE',       '');
+        apex.set_item('$PRIVATE_NOTE',      '');
         --
         FOR c IN (
             SELECT t.test_name, t.test_topic
@@ -40,7 +42,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         END LOOP;
         --
         FOR c IN (
-            SELECT q.question, q.explanation, q.is_to_verify
+            SELECT q.question, q.explanation, q.is_to_verify, q.public_note
             FROM quiz_questions q
             WHERE q.test_id         = apex.get_item('$TEST_ID')
                 AND q.question_id   = apex.get_item('$QUESTION_ID')
@@ -48,6 +50,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             apex.set_item('$QUESTION',      c.question);
             apex.set_item('$EXPLANATION',   c.explanation);
             apex.set_item('$TO_VERIFY',     c.is_to_verify);
+            apex.set_item('$PUBLIC_NOTE',   c.public_note);
         END LOOP;
         --
         FOR c IN (
@@ -60,13 +63,14 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
         -- previous answers
         FOR c IN (
-            SELECT a.answers, a.is_bookmarked
+            SELECT a.answers, a.is_bookmarked, a.private_note
             FROM quiz_attempts a
             WHERE a.user_id         = sess.get_user_id()
                 AND a.test_id       = apex.get_item('$TEST_ID')
                 AND a.question_id   = apex.get_item('$QUESTION_ID')
         ) LOOP
             apex.set_item('$BOOKMARKED',    c.is_bookmarked);
+            apex.set_item('$PRIVATE_NOTE',  c.private_note);
             --
             IF NVL(c.is_bookmarked, '-') != 'Y' THEN
             --IF (NVL(c.is_bookmarked, '-') != 'Y' OR apex.get_item('$ERROR') IS NOT NULL) THEN
@@ -155,7 +159,9 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     PROCEDURE process_answer (
         in_answer           VARCHAR2,
         in_bookmarked       quiz_attempts.is_bookmarked%TYPE,
-        in_to_verify        quiz_questions.is_to_verify%TYPE
+        in_to_verify        quiz_questions.is_to_verify%TYPE,
+        in_public_note      quiz_questions.public_note%TYPE     := NULL,
+        in_private_note     quiz_attempts.private_note%TYPE     := NULL
     ) AS
         rec                 quiz_attempts%ROWTYPE;
     BEGIN
@@ -167,6 +173,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         rec.updated_at      := SYSDATE;
         rec.is_bookmarked   := NULLIF(in_bookmarked,    'N');
         rec.counter         := 1;
+        rec.private_note    := in_private_note;
 
         -- fix answers feature
         IF APEX_APPLICATION.G_REQUEST = 'FIX_ANSWERS' THEN  -- button name in APEX
@@ -194,7 +201,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             -- clear verify flag
             IF NULLIF(in_to_verify, 'N') IS NULL THEN
                 UPDATE quiz_questions q
-                SET q.is_to_verify      = NULL
+                SET q.is_to_verify      = NULL,
+                    q.public_note       = in_public_note
                 WHERE q.test_id         = rec.test_id
                     AND q.question_id   = rec.question_id;
             END IF;
@@ -203,7 +211,13 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         -- set verify flag
         IF in_to_verify = 'Y' THEN
             UPDATE quiz_questions q
-            SET q.is_to_verify      = 'Y'
+            SET q.is_to_verify      = 'Y',
+                q.public_note       = in_public_note
+            WHERE q.test_id         = rec.test_id
+                AND q.question_id   = rec.question_id;
+        ELSE
+            UPDATE quiz_questions q
+            SET q.public_note       = in_public_note
             WHERE q.test_id         = rec.test_id
                 AND q.question_id   = rec.question_id;
         END IF;

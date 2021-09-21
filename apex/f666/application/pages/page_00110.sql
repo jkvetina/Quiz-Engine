@@ -52,11 +52,11 @@ wwv_flow_api.create_page(
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
-,p_last_upd_yyyymmddhh24miss=>'20210919075901'
+,p_last_upd_yyyymmddhh24miss=>'20210921183541'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(119237602062121148)
-,p_plug_name=>'&P110_TEST_NAME. (&P110_PROGRESS_PERC.%)'
+,p_plug_name=>'&P110_HEADER.'
 ,p_icon_css_classes=>'fa-question-square'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(123563463431712967)
@@ -74,7 +74,7 @@ wwv_flow_api.create_page_plug(
 ,p_region_name=>'QUESTION'
 ,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>20
+,p_plug_display_sequence=>10
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_grid_column_span=>6
 ,p_plug_display_point=>'BODY'
@@ -89,7 +89,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_name=>'Explanation'
 ,p_region_template_options=>'#DEFAULT#:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>30
+,p_plug_display_sequence=>20
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_new_grid_row=>false
 ,p_plug_new_grid_column=>false
@@ -108,11 +108,10 @@ wwv_flow_api.create_page_plug(
 ,p_plug_name=>'Bookmarked Questions (&P110_BOOKMARKED_PERC.%)'
 ,p_region_template_options=>'#DEFAULT#:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>50
+,p_plug_display_sequence=>40
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_new_grid_row=>false
 ,p_plug_grid_column_span=>3
-,p_plug_display_column=>7
 ,p_plug_display_point=>'BODY'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_attribute_01=>'N'
@@ -178,7 +177,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_name=>'Unanswered Questions (&P110_UNANSWERED_PERC.%)'
 ,p_region_template_options=>'#DEFAULT#:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>70
+,p_plug_display_sequence=>60
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_new_grid_row=>false
 ,p_plug_grid_column_span=>3
@@ -252,7 +251,7 @@ wwv_flow_api.create_page_plug(
 ,p_plug_name=>'Correct Wrong Anwers'
 ,p_region_template_options=>'#DEFAULT#:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>40
+,p_plug_display_sequence=>30
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_new_grid_row=>false
 ,p_plug_new_grid_column=>false
@@ -269,11 +268,10 @@ wwv_flow_api.create_page_plug(
 ,p_plug_name=>'Questions to Verify (shared)'
 ,p_region_template_options=>'#DEFAULT#:t-Region--noBorder:t-Region--scrollBody'
 ,p_plug_template=>wwv_flow_api.id(123590440289713011)
-,p_plug_display_sequence=>60
+,p_plug_display_sequence=>40
 ,p_include_in_reg_disp_sel_yn=>'Y'
 ,p_plug_new_grid_row=>false
-,p_plug_grid_column_span=>3
-,p_plug_display_column=>7
+,p_plug_new_grid_column=>false
 ,p_plug_display_point=>'BODY'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_attribute_01=>'N'
@@ -421,7 +419,7 @@ wwv_flow_api.create_page_button(
 ,p_button_plug_id=>wwv_flow_api.id(125299989539847006)
 ,p_button_name=>'NEXT_ALL'
 ,p_button_action=>'SUBMIT'
-,p_button_template_options=>'#DEFAULT#'
+,p_button_template_options=>'#DEFAULT#:t-Button--pill'
 ,p_button_template_id=>wwv_flow_api.id(123652233540713199)
 ,p_button_image_alt=>'Next in a List'
 ,p_button_position=>'BELOW_BOX'
@@ -641,6 +639,67 @@ wwv_flow_api.create_page_item(
 ,p_attribute_04=>'N'
 ,p_attribute_05=>'N'
 );
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(157581159288398850)
+,p_name=>'P110_PUBLIC_NOTE'
+,p_item_sequence=>90
+,p_item_plug_id=>wwv_flow_api.id(125299989539847006)
+,p_prompt=>'Public Note'
+,p_display_as=>'NATIVE_TEXTAREA'
+,p_cSize=>30
+,p_cHeight=>5
+,p_field_template=>wwv_flow_api.id(123651838042713193)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'Y'
+,p_attribute_02=>'N'
+,p_attribute_03=>'N'
+,p_attribute_04=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(157813919505227901)
+,p_name=>'P110_PRIVATE_NOTE'
+,p_item_sequence=>100
+,p_item_plug_id=>wwv_flow_api.id(125299989539847006)
+,p_prompt=>'Private Note'
+,p_display_as=>'NATIVE_TEXTAREA'
+,p_cSize=>30
+,p_cHeight=>5
+,p_begin_on_new_line=>'N'
+,p_field_template=>wwv_flow_api.id(123651838042713193)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'Y'
+,p_attribute_02=>'N'
+,p_attribute_03=>'N'
+,p_attribute_04=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(157814069910227902)
+,p_name=>'P110_HEADER'
+,p_item_sequence=>130
+,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
+,p_display_as=>'NATIVE_HIDDEN'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_computation(
+ p_id=>wwv_flow_api.id(157814119683227903)
+,p_computation_sequence=>10
+,p_computation_item=>'P110_HEADER'
+,p_computation_point=>'BEFORE_BOX_BODY'
+,p_computation_type=>'QUERY'
+,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT',
+'    apex.get_item(''$TEST_NAME'') || '' -- '' ||',
+'    apex.get_item(''$PROGRESS_PERC'') || ''% done, '' ||',
+'    (100 - apex.get_item(''$BOOKMARKED_PERC'')) || ''% '' ||',
+'    CASE',
+'        WHEN (100 - apex.get_item(''$BOOKMARKED_PERC'')) > c.pass_ratio THEN ''succeed''',
+'        WHEN c.pass_ratio IS NOT NULL THEN ''fail''',
+'        ELSE ''result'' END || '''' AS header_',
+'FROM DUAL',
+'LEFT JOIN plan_certifications c',
+'    ON c.path_id = apex.get_item(''$TOPIC_ID'');',
+''))
+);
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(138599797885602704)
 ,p_name=>'SHOW_ERROR'
@@ -730,9 +789,11 @@ wwv_flow_api.create_page_process(
 ,p_process_name=>'PROCESS_ANSWER'
 ,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'quiz.process_answer (',
-'    in_answer       => :P110_ANSWER,',
-'    in_bookmarked   => :P110_BOOKMARKED,',
-'    in_to_verify    => :P110_TO_VERIFY',
+'    in_answer           => :P110_ANSWER,',
+'    in_bookmarked       => :P110_BOOKMARKED,',
+'    in_to_verify        => :P110_TO_VERIFY,',
+'    in_public_note      => :P110_PUBLIC_NOTE,',
+'    in_private_note     => :P110_PRIVATE_NOTE',
 ');',
 ''))
 ,p_process_clob_language=>'PLSQL'
