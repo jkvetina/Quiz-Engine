@@ -145,7 +145,7 @@ wwv_flow_api.create_page_plug(
 );
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(143433903431904433)
-,p_name=>'P125_TEST_GROUP'
+,p_name=>'P125_TOPIC_ID'
 ,p_item_sequence=>20
 ,p_item_plug_id=>wwv_flow_api.id(286600257237137941)
 ,p_display_as=>'NATIVE_HIDDEN'
@@ -176,12 +176,12 @@ wwv_flow_api.create_page_computation(
 wwv_flow_api.create_page_computation(
  p_id=>wwv_flow_api.id(143434014540904434)
 ,p_computation_sequence=>20
-,p_computation_item=>'P125_TEST_GROUP'
+,p_computation_item=>'P125_TOPIC_ID'
 ,p_computation_point=>'AFTER_HEADER'
 ,p_computation_type=>'EXPRESSION'
 ,p_computation_language=>'PLSQL'
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'COALESCE(:P100_TEST_GROUP, :P110_TEST_GROUP, :P125_TEST_GROUP)',
+'COALESCE(:P100_TOPIC_ID, :P110_TOPIC_ID, :P125_TOPIC_ID)',
 ''))
 ,p_computation_comment=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'USE GLOBAL ITEM INSTEAD',
