@@ -49,6 +49,11 @@ wwv_flow_api.create_page(
 '.bold {',
 '  font-weight     : bold;',
 '}',
+'',
+'/** to align test results to the right */',
+'.t-HeroRegion-col--content {',
+'  flex-grow       : 1000;',
+'}',
 ''))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'QUIZ_DEV'
@@ -56,7 +61,7 @@ wwv_flow_api.create_page(
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(119237602062121148)
-,p_plug_name=>'&P110_HEADER.'
+,p_plug_name=>'&P110_TEST_NAME. <div style="float: right;">&P110_RESULT.</div>'
 ,p_icon_css_classes=>'fa-question-square'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(123563463431712967)
@@ -464,7 +469,7 @@ wwv_flow_api.create_page_branch(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(119237738241121149)
 ,p_name=>'P110_QUESTION_ID'
-,p_item_sequence=>50
+,p_item_sequence=>40
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -487,7 +492,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(125299628598847003)
 ,p_name=>'P110_TEST_ID'
-,p_item_sequence=>40
+,p_item_sequence=>30
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -495,7 +500,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(125299750628847004)
 ,p_name=>'P110_TOPIC_ID'
-,p_item_sequence=>20
+,p_item_sequence=>10
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -503,7 +508,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(125299823496847005)
 ,p_name=>'P110_TEST_NAME'
-,p_item_sequence=>30
+,p_item_sequence=>20
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -553,7 +558,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(125303081926847037)
 ,p_name=>'P110_QUESTIONS'
-,p_item_sequence=>80
+,p_item_sequence=>50
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -561,7 +566,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(125303154096847038)
 ,p_name=>'P110_EXPECTED'
-,p_item_sequence=>90
+,p_item_sequence=>60
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -585,7 +590,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(138599676823602703)
 ,p_name=>'P110_ERROR'
-,p_item_sequence=>100
+,p_item_sequence=>70
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -609,7 +614,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(138601534030602722)
 ,p_name=>'P110_SHOW_CORRECT'
-,p_item_sequence=>110
+,p_item_sequence=>80
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -617,7 +622,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(143432413462904418)
 ,p_name=>'P110_SHOW_CORRECT_FLAG'
-,p_item_sequence=>120
+,p_item_sequence=>90
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
@@ -673,28 +678,27 @@ wwv_flow_api.create_page_item(
 ,p_attribute_04=>'BOTH'
 );
 wwv_flow_api.create_page_item(
- p_id=>wwv_flow_api.id(157814069910227902)
-,p_name=>'P110_HEADER'
-,p_item_sequence=>130
+ p_id=>wwv_flow_api.id(157814735789227909)
+,p_name=>'P110_RESULT'
+,p_item_sequence=>100
 ,p_item_plug_id=>wwv_flow_api.id(119237602062121148)
 ,p_display_as=>'NATIVE_HIDDEN'
 ,p_attribute_01=>'Y'
 );
 wwv_flow_api.create_page_computation(
- p_id=>wwv_flow_api.id(157814119683227903)
-,p_computation_sequence=>10
-,p_computation_item=>'P110_HEADER'
+ p_id=>wwv_flow_api.id(157814873025227910)
+,p_computation_sequence=>20
+,p_computation_item=>'P110_RESULT'
 ,p_computation_point=>'BEFORE_BOX_BODY'
 ,p_computation_type=>'QUERY'
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
-'    apex.get_item(''$TEST_NAME'') || '' -- '' ||',
 '    apex.get_item(''$PROGRESS_PERC'') || ''% done, '' ||',
-'    (100 - apex.get_item(''$BOOKMARKED_PERC'')) || ''% '' ||',
+'    (100 - apex.get_item(''$BOOKMARKED_PERC'')) || ''% correct'' ||',
 '    CASE',
-'        WHEN (100 - apex.get_item(''$BOOKMARKED_PERC'')) > c.pass_ratio THEN ''succeed''',
-'        WHEN c.pass_ratio IS NOT NULL THEN ''fail''',
-'        ELSE ''result'' END || '''' AS header_',
+'        WHEN (100 - apex.get_item(''$BOOKMARKED_PERC'')) > c.pass_ratio THEN '' = PASS''',
+'        WHEN c.pass_ratio IS NOT NULL THEN '' = FAIL''',
+'        END AS result_',
 'FROM DUAL',
 'LEFT JOIN plan_certifications c',
 '    ON c.path_id = apex.get_item(''$TOPIC_ID'');',
