@@ -6,6 +6,8 @@ SELECT
     c.path_id,
     c.exam_page_link,
     c.credly_link,
+    c.study_link,
+    c.study_hours,
     c.questions,
     c.minutes,
     c.pass_ratio,

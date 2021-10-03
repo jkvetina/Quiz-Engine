@@ -6,6 +6,8 @@ CREATE TABLE plan_certifications (
     --
     exam_page_link      VARCHAR2(256),
     credly_link         VARCHAR2(256),
+    study_link          VARCHAR2(256),
+    study_hours         VARCHAR2(10),
     --
     questions           NUMBER(4),
     minutes             NUMBER(4),
