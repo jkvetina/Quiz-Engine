@@ -104,6 +104,7 @@ prompt --install
 @@application/pages/page_00120.sql
 @@application/pages/page_00125.sql
 @@application/pages/page_00210.sql
+@@application/pages/page_00220.sql
 @@application/pages/page_00300.sql
 @@application/pages/page_09999.sql
 @@application/end_environment.sql
