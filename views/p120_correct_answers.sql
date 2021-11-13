@@ -6,4 +6,6 @@ SELECT
     a.answer,
     a.is_correct
 FROM quiz_answers a
+JOIN p100_tests_available t
+    ON t.test_id        = a.test_id
 WHERE a.is_correct      IN ('X', 'Y');

@@ -20,10 +20,8 @@ JOIN (
     FROM quiz_questions q
     JOIN quiz_tests t
         ON t.test_id        = q.test_id
-    WHERE (
-            t.dedicated_to      IS NULL
-            OR t.dedicated_to   = sess.get_user_id()
-        )
+    JOIN p100_tests_available a
+        ON a.test_id        = t.test_id
     GROUP BY t.test_topic
 ) q
     ON q.test_topic         = t.topic_id

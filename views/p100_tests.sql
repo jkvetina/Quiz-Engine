@@ -29,15 +29,13 @@ FROM (
     FROM quiz_questions q
     JOIN quiz_tests t
         ON t.test_id        = q.test_id
+    JOIN p100_tests_available a
+        ON a.test_id        = t.test_id
     LEFT JOIN quiz_attempts a
         ON a.user_id        = sess.get_user_id()
         AND a.test_id       = q.test_id
         AND a.question_id   = q.question_id
     WHERE t.test_topic      = apex.get_item('$TOPIC_ID')
-        AND (
-            t.dedicated_to      IS NULL
-            OR t.dedicated_to   = sess.get_user_id()
-        )
     GROUP BY t.test_id, t.test_name, t.dedicated_to
 ) t
 ORDER BY t.dedicated_to NULLS FIRST, t.test_id;

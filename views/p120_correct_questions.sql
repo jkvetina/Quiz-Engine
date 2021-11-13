@@ -13,6 +13,8 @@ FROM (
     FROM quiz_questions q
     JOIN quiz_tests t
         ON t.test_id        = q.test_id
+    JOIN p100_tests_available a
+        ON a.test_id        = t.test_id
     WHERE (
         q.test_id           = apex.get_item('$TEST_ID')
         OR t.test_topic     = apex.get_item('$TOPIC_ID')
