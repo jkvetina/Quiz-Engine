@@ -7,7 +7,7 @@ CREATE TABLE quiz_tests (
     created_at                      DATE,
     --
     CONSTRAINT pk_quiz_tests
-        PRIMARY KEY (test_id)
+        PRIMARY KEY (test_id),
     --
     CONSTRAINT fk_quiz_tests_group
         FOREIGN KEY (test_topic)

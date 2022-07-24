@@ -3,7 +3,7 @@ CREATE TABLE plan_paths (
     path_name                       VARCHAR2(100)   NOT NULL,
     --
     CONSTRAINT pk_plan_paths
-        PRIMARY KEY (path_id)
+        PRIMARY KEY (path_id),
     --
     CONSTRAINT fk_plan_certifications_topic
         FOREIGN KEY (path_id)

@@ -7,7 +7,7 @@ CREATE TABLE quiz_questions (
     public_note                     VARCHAR2(4000),
     --
     CONSTRAINT pk_quiz_questions
-        PRIMARY KEY (test_id, question_id)
+        PRIMARY KEY (test_id, question_id),
     --
     CONSTRAINT fk_quiz_questions_tests
         FOREIGN KEY (test_id)

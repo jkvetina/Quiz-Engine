@@ -6,7 +6,7 @@ CREATE TABLE plan_certifications_notes (
     notes                           VARCHAR2(4000),
     --
     CONSTRAINT pk_plan_certifications_notes
-        PRIMARY KEY (user_id, cert_id)
+        PRIMARY KEY (user_id, cert_id),
     --
     CONSTRAINT fk_plan_certifications_notes_cert
         FOREIGN KEY (cert_id)

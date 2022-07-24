@@ -6,7 +6,7 @@ CREATE TABLE quiz_answers (
     is_correct                      VARCHAR2(1),
     --
     CONSTRAINT pk_quiz_answers
-        PRIMARY KEY (test_id, question_id, answer_id)
+        PRIMARY KEY (test_id, question_id, answer_id),
     --
     CONSTRAINT fk_quiz_answers
         FOREIGN KEY (test_id, question_id)

@@ -6,7 +6,7 @@ CREATE TABLE quiz_topics_auth (
     created_at                      DATE,
     --
     CONSTRAINT pk_quiz_topics_auth
-        PRIMARY KEY (topic_id, user_id)
+        PRIMARY KEY (topic_id, user_id),
     --
     CONSTRAINT fk_quiz_topics_topic
         FOREIGN KEY (topic_id)

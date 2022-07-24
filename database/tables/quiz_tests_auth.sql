@@ -6,7 +6,7 @@ CREATE TABLE quiz_tests_auth (
     created_at                      DATE,
     --
     CONSTRAINT pk_quiz_tests_auth
-        PRIMARY KEY (test_id, user_id)
+        PRIMARY KEY (test_id, user_id),
     --
     CONSTRAINT fk_quiz_tests_test
         FOREIGN KEY (test_id)

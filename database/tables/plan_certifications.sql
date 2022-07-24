@@ -12,7 +12,7 @@ CREATE TABLE plan_certifications (
     study_hours                     VARCHAR2(10),
     --
     CONSTRAINT pk_plan_certifications
-        PRIMARY KEY (cert_id)
+        PRIMARY KEY (cert_id),
     --
     CONSTRAINT fk_plan_certifications_path
         FOREIGN KEY (path_id)
