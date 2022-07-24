@@ -1,6 +1,6 @@
 CREATE OR REPLACE FORCE VIEW p300_certifications AS
 SELECT
-    sess.get_user_id()          AS user_id,
+    app.get_user_id()          AS user_id,
     c.cert_id,
     c.cert_name,
     c.path_id,
@@ -29,7 +29,7 @@ LEFT JOIN (
     ON t.test_topic             = c.path_id
 LEFT JOIN plan_certifications_notes n
     ON n.cert_id                = c.cert_id
-    AND n.user_id               = sess.get_user_id();
+    AND n.user_id               = app.get_user_id();
 --
 COMMENT ON TABLE p300_certifications IS '';
 

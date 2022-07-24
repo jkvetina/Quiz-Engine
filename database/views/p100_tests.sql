@@ -13,7 +13,7 @@ SELECT
         THEN NVL(FLOOR(100 - 100 * (t.is_bookmarked / t.questions)), 0) || '%'
         END AS count_,
     --
-    CASE WHEN t.test_id = apex.get_item('$TEST_ID')
+    CASE WHEN t.test_id = app.get_item('$TEST_ID')
         THEN 'bold'
         END AS css_class
 FROM (
@@ -32,10 +32,10 @@ FROM (
     JOIN p100_tests_available a
         ON a.test_id        = t.test_id
     LEFT JOIN quiz_attempts a
-        ON a.user_id        = sess.get_user_id()
+        ON a.user_id        = app.get_user_id()
         AND a.test_id       = q.test_id
         AND a.question_id   = q.question_id
-    WHERE t.test_topic      = apex.get_item('$TOPIC_ID')
+    WHERE t.test_topic      = app.get_item('$TOPIC_ID')
     GROUP BY t.test_id, t.test_name, t.dedicated_to
 ) t
 ORDER BY t.dedicated_to NULLS FIRST, t.test_id;
