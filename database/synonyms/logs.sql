@@ -1,0 +1,2 @@
+CREATE OR REPLACE SYNONYM logs FOR core.logs;
+
