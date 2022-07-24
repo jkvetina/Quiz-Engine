@@ -2,20 +2,20 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
     PROCEDURE prepare_items AS
     BEGIN
-        tree.log_module();
+        app.log_module();
 
         -- find first empty, then bookmarked question
-        IF apex.get_item('$QUESTION_ID') IS NULL THEN
-            apex.set_item('$QUESTION_ID', quiz.get_prev_next_question (
-                in_test_id      => apex.get_item('$TEST_ID'),
+        IF app.get_item('$QUESTION_ID') IS NULL THEN
+            app.set_item('$QUESTION_ID', quiz.get_prev_next_question (
+                in_test_id      => app.get_item('$TEST_ID'),
                 in_question_id  => 0,
                 in_bookmarked   => NULL,
                 in_unanswered   => 'Y'
             ));
             --
-            IF apex.get_item('$QUESTION_ID') IS NULL THEN
-                apex.set_item('$QUESTION_ID', quiz.get_prev_next_question (
-                    in_test_id      => apex.get_item('$TEST_ID'),
+            IF app.get_item('$QUESTION_ID') IS NULL THEN
+                app.set_item('$QUESTION_ID', quiz.get_prev_next_question (
+                    in_test_id      => app.get_item('$TEST_ID'),
                     in_question_id  => 0,
                     in_bookmarked   => 'Y',
                     in_unanswered   => NULL
@@ -24,93 +24,93 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         END IF;
 
         -- load data
-        apex.set_item('$QUESTION',          '');
-        apex.set_item('$ANSWER',            '');
-        apex.set_item('$EXPLANATION',       '');
-        apex.set_item('$SHOW_CORRECT_FLAG', '');
-        apex.set_item('$TO_VERIFY',         '');
-        apex.set_item('$PUBLIC_NOTE',       '');
-        apex.set_item('$PRIVATE_NOTE',      '');
+        app.set_item('$QUESTION',          '');
+        app.set_item('$ANSWER',            '');
+        app.set_item('$EXPLANATION',       '');
+        app.set_item('$SHOW_CORRECT_FLAG', '');
+        app.set_item('$TO_VERIFY',         '');
+        app.set_item('$PUBLIC_NOTE',       '');
+        app.set_item('$PRIVATE_NOTE',      '');
         --
         FOR c IN (
             SELECT t.test_name, t.test_topic
             FROM quiz_tests t
-            WHERE t.test_id         = apex.get_item('$TEST_ID')
+            WHERE t.test_id         = app.get_item('$TEST_ID')
         ) LOOP
-            apex.set_item('$TEST_NAME',     c.test_name);
-            apex.set_item('$TOPIC_ID',      c.test_topic);
+            app.set_item('$TEST_NAME',     c.test_name);
+            app.set_item('$TOPIC_ID',      c.test_topic);
         END LOOP;
         --
         FOR c IN (
             SELECT q.question, q.explanation, q.is_to_verify, q.public_note
             FROM quiz_questions q
-            WHERE q.test_id         = apex.get_item('$TEST_ID')
-                AND q.question_id   = apex.get_item('$QUESTION_ID')
+            WHERE q.test_id         = app.get_item('$TEST_ID')
+                AND q.question_id   = app.get_item('$QUESTION_ID')
         ) LOOP
-            apex.set_item('$QUESTION',      c.question);
-            apex.set_item('$EXPLANATION',   c.explanation);
-            apex.set_item('$TO_VERIFY',     c.is_to_verify);
-            apex.set_item('$PUBLIC_NOTE',   c.public_note);
+            app.set_item('$QUESTION',      c.question);
+            app.set_item('$EXPLANATION',   c.explanation);
+            app.set_item('$TO_VERIFY',     c.is_to_verify);
+            app.set_item('$PUBLIC_NOTE',   c.public_note);
         END LOOP;
         --
         FOR c IN (
             SELECT COUNT(*) AS questions
             FROM quiz_questions q
-            WHERE q.test_id         = apex.get_item('$TEST_ID')
+            WHERE q.test_id         = app.get_item('$TEST_ID')
         ) LOOP
-            apex.set_item('$QUESTIONS',     c.questions);
+            app.set_item('$QUESTIONS',     c.questions);
         END LOOP;
 
         -- previous answers
         FOR c IN (
             SELECT a.answers, a.is_bookmarked, a.private_note
             FROM quiz_attempts a
-            WHERE a.user_id         = sess.get_user_id()
-                AND a.test_id       = apex.get_item('$TEST_ID')
-                AND a.question_id   = apex.get_item('$QUESTION_ID')
+            WHERE a.user_id         = app.get_user_id()
+                AND a.test_id       = app.get_item('$TEST_ID')
+                AND a.question_id   = app.get_item('$QUESTION_ID')
         ) LOOP
-            apex.set_item('$BOOKMARKED',    c.is_bookmarked);
-            apex.set_item('$PRIVATE_NOTE',  c.private_note);
+            app.set_item('$BOOKMARKED',    c.is_bookmarked);
+            app.set_item('$PRIVATE_NOTE',  c.private_note);
             --
             IF NVL(c.is_bookmarked, '-') != 'Y' THEN
-            --IF (NVL(c.is_bookmarked, '-') != 'Y' OR apex.get_item('$ERROR') IS NOT NULL) THEN
-                apex.set_item('$ANSWER', c.answers);
+            --IF (NVL(c.is_bookmarked, '-') != 'Y' OR app.get_item('$ERROR') IS NOT NULL) THEN
+                app.set_item('$ANSWER', c.answers);
             END IF;
         END LOOP;
 
         -- correct answers
-        IF (APEX_APPLICATION.G_REQUEST = 'SHOW_CORRECT' OR apex.get_item('$SHOW_CORRECT') = 'Y') THEN
+        IF (APEX_APPLICATION.G_REQUEST = 'SHOW_CORRECT' OR app.get_item('$SHOW_CORRECT') = 'Y') THEN
             FOR c IN (
                 SELECT LISTAGG(a.answer_id, ':') WITHIN GROUP (ORDER BY a.answer_id) AS answers
                 FROM quiz_answers a
-                WHERE a.test_id         = apex.get_item('$TEST_ID')
-                    AND a.question_id   = apex.get_item('$QUESTION_ID')
+                WHERE a.test_id         = app.get_item('$TEST_ID')
+                    AND a.question_id   = app.get_item('$QUESTION_ID')
                     AND a.is_correct    = 'Y'
             ) LOOP
-                apex.set_item('$BOOKMARKED',    'Y');
-                apex.set_item('$ANSWER',        c.answers);
-                apex.set_item('$ERROR',         '');
+                app.set_item('$BOOKMARKED',    'Y');
+                app.set_item('$ANSWER',        c.answers);
+                app.set_item('$ERROR',         '');
             END LOOP;
             --
-            IF apex.get_item('$EXPLANATION') IS NOT NULL THEN
-                apex.set_item('$SHOW_CORRECT_FLAG', 'Y');
+            IF app.get_item('$EXPLANATION') IS NOT NULL THEN
+                app.set_item('$SHOW_CORRECT_FLAG', 'Y');
             END IF;
         END IF;
 
         -- show explanation when answer is correct, but dont flip Bookmark switch
-        IF apex.get_item('$ANSWER') IS NOT NULL THEN
-            apex.set_item('$SHOW_CORRECT',      'Y');
-            apex.set_item('$SHOW_CORRECT_FLAG', 'Y');
+        IF app.get_item('$ANSWER') IS NOT NULL THEN
+            app.set_item('$SHOW_CORRECT',      'Y');
+            app.set_item('$SHOW_CORRECT_FLAG', 'Y');
         END IF;
 
         -- calculate percentages
         FOR c IN (
             SELECT CASE WHEN COUNT(*) > 0 THEN ROUND(100 * (COUNT(a.is_bookmarked) / COUNT(*)), 0) ELSE 0 END AS perc
             FROM quiz_attempts a
-            WHERE a.user_id         = sess.get_user_id()
-                AND a.test_id       = apex.get_item('$TEST_ID')
+            WHERE a.user_id         = app.get_user_id()
+                AND a.test_id       = app.get_item('$TEST_ID')
         ) LOOP
-            apex.set_item('$BOOKMARKED_PERC', c.perc);
+            app.set_item('$BOOKMARKED_PERC', c.perc);
         END LOOP;
         --
         FOR c IN (
@@ -118,40 +118,40 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             FROM (
                 SELECT COUNT(*) AS total
                 FROM quiz_questions q
-                WHERE q.test_id         = apex.get_item('$TEST_ID')
+                WHERE q.test_id         = app.get_item('$TEST_ID')
             ) q
             CROSS JOIN (
                 SELECT COUNT(*) AS correct
                 FROM quiz_attempts a
-                WHERE a.user_id         = sess.get_user_id()
-                    AND a.test_id       = apex.get_item('$TEST_ID')
+                WHERE a.user_id         = app.get_user_id()
+                    AND a.test_id       = app.get_item('$TEST_ID')
                     AND a.is_correct    = 'Y'
             ) a
         ) LOOP
-            apex.set_item('$UNANSWERED_PERC', c.perc);
-            apex.set_item('$PROGRESS_PERC',   100 - c.perc);
+            app.set_item('$UNANSWERED_PERC', c.perc);
+            app.set_item('$PROGRESS_PERC',   100 - c.perc);
         END LOOP;
 
         -- number of expected answers (as a hint or for radio/checkbox switch)
         FOR c IN (
             SELECT COUNT(*) AS answers
             FROM quiz_answers a
-            WHERE a.test_id       = apex.get_item('$TEST_ID')
-                AND a.question_id = apex.get_item('$QUESTION_ID')
+            WHERE a.test_id       = app.get_item('$TEST_ID')
+                AND a.question_id = app.get_item('$QUESTION_ID')
                 AND a.is_correct  = 'Y'
         ) LOOP
-            apex.set_item('$EXPECTED', c.answers);
+            app.set_item('$EXPECTED', c.answers);
         END LOOP;
 
         -- clear items after init
-        apex.set_item('$SHOW_CORRECT', '');
+        app.set_item('$SHOW_CORRECT', '');
         --
-        tree.update_timer();
+        app.log_success();
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
@@ -165,11 +165,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     ) AS
         rec                 quiz_attempts%ROWTYPE;
     BEGIN
-        tree.log_module(APEX_APPLICATION.G_REQUEST, in_answer, in_bookmarked, in_to_verify);
+        app.log_module(APEX_APPLICATION.G_REQUEST, in_answer, in_bookmarked, in_to_verify);
         --
-        rec.user_id         := sess.get_user_id();
-        rec.test_id         := apex.get_item('$TEST_ID');
-        rec.question_id     := apex.get_item('$QUESTION_ID');
+        rec.user_id         := app.get_user_id();
+        rec.test_id         := app.get_item('$TEST_ID');
+        rec.question_id     := app.get_item('$QUESTION_ID');
         rec.updated_at      := SYSDATE;
         rec.is_bookmarked   := NULLIF(in_bookmarked,    'N');
         rec.counter         := 1;
@@ -195,7 +195,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                     AND a.question_id   = rec.question_id
                     AND a.answer_id     = c.answer;
                 --
-                tree.log_warning('FIX_ANSWERS', rec.test_id, rec.question_id, c.answer, SQL%ROWCOUNT);
+                app.log_warning('FIX_ANSWERS', rec.test_id, rec.question_id, c.answer, SQL%ROWCOUNT);
             END LOOP;
 
             -- clear verify flag
@@ -273,8 +273,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
         -- throw error in learning mode
         IF NVL(rec.is_correct, '-') != 'Y' AND rec.answers IS NOT NULL THEN
-            apex.set_item('$BOOKMARKED',    'Y');
-            apex.set_item('$ERROR',         'INCORRECT_ANSWER');
+            app.set_item('$BOOKMARKED',    'Y');
+            app.set_item('$ERROR',         'INCORRECT_ANSWER');
             --
             --RAISE_APPLICATION_ERROR(-20000, 'INCORRECT_ANSWER');
             /*
@@ -285,26 +285,26 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             */
         ELSE
             -- redirect to prev/next question
-            apex.set_item('$QUESTION_ID', quiz.get_prev_next_question (
+            app.set_item('$QUESTION_ID', quiz.get_prev_next_question (
                 in_test_id      => rec.test_id,
                 in_question_id  => rec.question_id,
-                in_bookmarked   => apex.get_item('$SKIP_CORRECT'),
-                in_unanswered   => apex.get_item('$SKIP_CORRECT'),
+                in_bookmarked   => app.get_item('$SKIP_CORRECT'),
+                in_unanswered   => app.get_item('$SKIP_CORRECT'),
                 in_direction    => APEX_APPLICATION.G_REQUEST
             ));
 
             -- clear answers for next question, clear bookmarks
-            apex.set_item('$ANSWER',        '');
-            apex.set_item('$BOOKMARKED',    '');
-            apex.set_item('$ERROR',         '');
+            app.set_item('$ANSWER',        '');
+            app.set_item('$BOOKMARKED',    '');
+            app.set_item('$ERROR',         '');
         END IF;
         --
-        tree.update_timer();
+        app.log_success();
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
@@ -313,17 +313,17 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     AS
         first_question      quiz_questions.question_id%TYPE := 0;
     BEGIN
-        tree.log_module();
+        app.log_module();
         --
         FOR c IN (
             SELECT a.question_id, a.ROWID AS rid
             FROM quiz_questions q
             JOIN quiz_attempts a
-                ON a.user_id            = sess.get_user_id()
+                ON a.user_id            = app.get_user_id()
                 AND a.test_id           = q.test_id
                 AND a.question_id       = q.question_id
                 AND a.is_bookmarked     = 'Y'
-            WHERE q.test_id             = apex.get_item('$TEST_ID')
+            WHERE q.test_id             = app.get_item('$TEST_ID')
         ) LOOP
             DELETE FROM quiz_attempts a
             WHERE ROWID = c.rid;
@@ -337,25 +337,25 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             SELECT MIN(q.question_id) INTO first_question
             FROM quiz_questions q
             LEFT JOIN quiz_attempts a
-                ON a.user_id            = sess.get_user_id()
+                ON a.user_id            = app.get_user_id()
                 AND a.test_id           = q.test_id
                 AND a.question_id       = q.question_id
-            WHERE q.test_id             = apex.get_item('$TEST_ID')
+            WHERE q.test_id             = app.get_item('$TEST_ID')
                 AND a.question_id       IS NULL;
         END IF;
         --
-        tree.update_timer();
+        app.log_success();
 
         -- set first empty question
-        apex.redirect (
-            in_names    => 'P' || sess.get_page_id() || '_QUESTION_ID,P' || sess.get_page_id() || '_SKIP_CORRECT',
+        app.redirect (
+            in_names    => 'P' || app.get_page_id() || '_QUESTION_ID,P' || app.get_page_id() || '_SKIP_CORRECT',
             in_values   => first_question || ',Y'
         );
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
@@ -364,36 +364,36 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     AS
         first_question      quiz_questions.question_id%TYPE := 0;
     BEGIN
-        tree.log_module();
+        app.log_module();
         --
         DELETE FROM quiz_attempts a
-        WHERE a.user_id         = sess.get_user_id()
-            AND a.test_id       = apex.get_item('$TEST_ID')
+        WHERE a.user_id         = app.get_user_id()
+            AND a.test_id       = app.get_item('$TEST_ID')
             AND a.is_bookmarked IS NULL;
         --
         UPDATE quiz_attempts a
         SET a.answers           = NULL,
             a.is_correct        = NULL
-        WHERE a.user_id         = sess.get_user_id()
-            AND a.test_id       = apex.get_item('$TEST_ID')
+        WHERE a.user_id         = app.get_user_id()
+            AND a.test_id       = app.get_item('$TEST_ID')
             AND a.is_bookmarked = 'Y';
         --
         SELECT MIN(q.question_id) INTO first_question
         FROM quiz_questions q
-        WHERE q.test_id             = apex.get_item('$TEST_ID');
+        WHERE q.test_id             = app.get_item('$TEST_ID');
         --
-        tree.update_timer();
+        app.log_success();
 
         -- set first empty question
-        apex.redirect (
-            in_names    => 'P' || sess.get_page_id() || '_QUESTION_ID,P' || sess.get_page_id() || '_SKIP_CORRECT',
+        app.redirect (
+            in_names    => 'P' || app.get_page_id() || '_QUESTION_ID,P' || app.get_page_id() || '_SKIP_CORRECT',
             in_values   => first_question || ',Y'
         );
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
@@ -410,14 +410,14 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     AS
         out_id              quiz_questions.question_id%TYPE;
     BEGIN
-        tree.log_module(in_test_id, in_question_id, in_bookmarked, in_unanswered, in_direction, in_user_id);
+        app.log_module(in_test_id, in_question_id, in_bookmarked, in_unanswered, in_direction, in_user_id);
 
         -- find questions next on the list
         IF in_direction = next_all_button THEN
             SELECT MIN(q.question_id) INTO out_id
             FROM quiz_questions q
             LEFT JOIN quiz_attempts a
-                ON a.user_id            = COALESCE(in_user_id, sess.get_user_id())
+                ON a.user_id            = COALESCE(in_user_id, app.get_user_id())
                 AND a.test_id           = q.test_id
                 AND a.question_id       = q.question_id
             WHERE q.test_id             = in_test_id
@@ -430,7 +430,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             SELECT MAX(q.question_id) INTO out_id
             FROM quiz_questions q
             LEFT JOIN quiz_attempts a
-                ON a.user_id            = COALESCE(in_user_id, sess.get_user_id())
+                ON a.user_id            = COALESCE(in_user_id, app.get_user_id())
                 AND a.test_id           = q.test_id
                 AND a.question_id       = q.question_id
             WHERE q.test_id             = in_test_id
@@ -447,7 +447,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 END INTO out_id
         FROM quiz_questions q
         LEFT JOIN quiz_attempts a
-            ON a.user_id            = COALESCE(in_user_id, sess.get_user_id())
+            ON a.user_id            = COALESCE(in_user_id, app.get_user_id())
             AND a.test_id           = q.test_id
             AND a.question_id       = q.question_id
         WHERE q.test_id             = in_test_id
@@ -465,10 +465,10 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
         NULL;
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
@@ -490,8 +490,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         r_answer                quiz_answers%ROWTYPE;
         --
         PROCEDURE clob_to_lines (
-            in_clob                 CLOB,
-            io_array        IN OUT  dump_lines_t
+            in_clob                         CLOB,
+            io_array        IN OUT  NOCOPY  dump_lines_t
         ) AS
             clob_len        PLS_INTEGER     := DBMS_LOB.GETLENGTH(in_clob);
             offset          PLS_INTEGER     := 1;
@@ -522,7 +522,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         END;
         --
     BEGIN
-        tree.log_module(in_test_id);
+        app.log_module(in_test_id);
         --
         SELECT t.data_length INTO l_expl_limit
         FROM user_tab_cols t
@@ -568,8 +568,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                             INSERT INTO quiz_questions VALUES r_question;
                         EXCEPTION
                         WHEN OTHERS THEN
-                            tree.log_error('QUESTION', r_question.question_id, r_question.question);
-                            tree.raise_error('QUESTION #' || l_row);
+                            app.log_error('QUESTION', r_question.question_id, r_question.question);
+                            app.raise_error('QUESTION #' || l_row);
                         END;
                         --
                         r_question.question         := '';
@@ -585,7 +585,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                             INSERT INTO quiz_answers VALUES r_answer;
                         EXCEPTION
                         WHEN OTHERS THEN
-                            tree.raise_error('QUESTION/ANSWER', r_question.question_id, r_question.question, r_answer.is_correct, r_answer.answer);
+                            app.raise_error('QUESTION/ANSWER', r_question.question_id, r_question.question, r_answer.is_correct, r_answer.answer);
                         END;
                         --
                         r_answer.answer             := '';
@@ -620,19 +620,19 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                         r_question.explanation  := SUBSTR(LTRIM(r_question.explanation || CHR(10) || l_line, CHR(10)), 1, l_expl_limit / 2);
                     EXCEPTION
                     WHEN OTHERS THEN
-                        tree.log_error('EXPLANATION', r_question.question_id, r_question.question, LENGTH(r_question.explanation || CHR(10) || l_line));
-                        tree.raise_error('EXPLANATION #' || l_row);
+                        app.log_error('EXPLANATION', r_question.question_id, r_question.question, LENGTH(r_question.explanation || CHR(10) || l_line));
+                        app.raise_error('EXPLANATION #' || l_row);
                     END;
                 END IF;
             END LOOP;
         END LOOP;
         --
-        tree.update_timer();
+        app.log_success();
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
@@ -641,7 +641,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         in_test_id          quiz_tests.test_id%TYPE
     ) AS
     BEGIN
-        tree.log_module(in_test_id);
+        app.log_module(in_test_id);
 
         -- delete previous test
         DELETE FROM quiz_attempts   WHERE test_id = in_test_id;
@@ -649,12 +649,12 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         DELETE FROM quiz_questions  WHERE test_id = in_test_id;
         DELETE FROM quiz_tests      WHERE test_id = in_test_id;
         --
-        tree.update_timer();
+        app.log_success();
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
@@ -669,7 +669,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         new_test_id         quiz_tests.test_id%TYPE;
         new_question_id     quiz_questions.question_id%TYPE         := 0;
     BEGIN
-        tree.log_module(in_topic_id, in_user_id);
+        app.log_module(in_topic_id, in_user_id);
 
         -- check if test exists
         SELECT MAX(t.test_id) INTO new_test_id
@@ -742,12 +742,12 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
             END LOOP;
         END LOOP;
         --
-        tree.update_timer();
+        app.log_success();
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
@@ -759,34 +759,34 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         in_notes            plan_certifications_notes.notes%TYPE
     ) AS
     BEGIN
-        tree.log_module(in_cert_id, in_is_done, in_priority, in_notes);
+        app.log_module(in_cert_id, in_is_done, in_priority, in_notes);
         --
         DELETE FROM plan_certifications_notes n
-        WHERE n.user_id     = sess.get_user_id()
+        WHERE n.user_id     = app.get_user_id()
             AND n.cert_id   = in_cert_id;
         --
         INSERT INTO plan_certifications_notes (user_id, cert_id, is_done, priority, notes)
         VALUES (
-            sess.get_user_id(),
+            app.get_user_id(),
             in_cert_id,
             in_is_done,
             CASE WHEN in_is_done = 'Y' THEN NULL ELSE in_priority END,
             in_notes
         );
         --
-        tree.update_timer();
+        app.log_success();
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 
 
     PROCEDURE resort_priorities AS
     BEGIN
-        tree.log_module();
+        app.log_module();
         --
         FOR c IN (
             SELECT
@@ -803,12 +803,12 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 AND n.cert_id   = c.cert_id;
         END LOOP;
         --
-        tree.update_timer();
+        app.log_success();
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error();
+        app.raise_error();
     END;
 
 END;
