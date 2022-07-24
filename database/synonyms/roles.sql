@@ -1,0 +1,2 @@
+CREATE OR REPLACE SYNONYM roles FOR core.roles;
+

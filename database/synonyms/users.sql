@@ -1,0 +1,2 @@
+CREATE OR REPLACE SYNONYM users FOR core.users;
+
