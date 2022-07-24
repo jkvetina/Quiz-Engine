@@ -84,7 +84,6 @@ prompt --install
 @@application/shared_components/user_interface/themes.sql
 @@application/shared_components/user_interface/theme_style.sql
 @@application/shared_components/user_interface/theme_files.sql
-@@application/shared_components/user_interface/theme_display_points.sql
 @@application/shared_components/user_interface/template_opt_groups.sql
 @@application/shared_components/user_interface/template_options.sql
 @@application/shared_components/globalization/language.sql
@@ -107,4 +106,7 @@ prompt --install
 @@application/pages/page_00220.sql
 @@application/pages/page_00300.sql
 @@application/pages/page_09999.sql
+@@application/deployment/definition.sql
+@@application/deployment/checks.sql
+@@application/deployment/buildoptions.sql
 @@application/end_environment.sql

@@ -3,21 +3,21 @@ begin
 --   Manifest
 --     LIST: Desktop Navigation Bar
 --   Manifest End
-wwv_flow_api.component_begin (
- p_version_yyyy_mm_dd=>'2021.04.15'
-,p_release=>'21.1.6'
+wwv_flow_imp.component_begin (
+ p_version_yyyy_mm_dd=>'2022.04.12'
+,p_release=>'22.1.2'
 ,p_default_workspace_id=>123132524645685789
 ,p_default_application_id=>666
 ,p_default_id_offset=>0
 ,p_default_owner=>'DEV'
 );
-wwv_flow_api.create_list(
- p_id=>wwv_flow_api.id(123675356071713292)
+wwv_flow_imp_shared.create_list(
+ p_id=>wwv_flow_imp.id(123675356071713292)
 ,p_name=>'Desktop Navigation Bar'
 ,p_list_status=>'PUBLIC'
 );
-wwv_flow_api.create_list_item(
- p_id=>wwv_flow_api.id(123686915406713475)
+wwv_flow_imp_shared.create_list_item(
+ p_id=>wwv_flow_imp.id(123686915406713475)
 ,p_list_item_display_sequence=>10
 ,p_list_item_link_text=>'&APP_USER.'
 ,p_list_item_link_target=>'#'
@@ -25,23 +25,23 @@ wwv_flow_api.create_list_item(
 ,p_list_text_02=>'has-username'
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
-wwv_flow_api.create_list_item(
- p_id=>wwv_flow_api.id(123687428577713476)
+wwv_flow_imp_shared.create_list_item(
+ p_id=>wwv_flow_imp.id(123687428577713476)
 ,p_list_item_display_sequence=>20
 ,p_list_item_link_text=>'---'
 ,p_list_item_link_target=>'separator'
-,p_parent_list_item_id=>wwv_flow_api.id(123686915406713475)
+,p_parent_list_item_id=>wwv_flow_imp.id(123686915406713475)
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
-wwv_flow_api.create_list_item(
- p_id=>wwv_flow_api.id(123687822348713482)
+wwv_flow_imp_shared.create_list_item(
+ p_id=>wwv_flow_imp.id(123687822348713482)
 ,p_list_item_display_sequence=>30
 ,p_list_item_link_text=>'Sign Out'
 ,p_list_item_link_target=>'&LOGOUT_URL.'
 ,p_list_item_icon=>'fa-sign-out'
-,p_parent_list_item_id=>wwv_flow_api.id(123686915406713475)
+,p_parent_list_item_id=>wwv_flow_imp.id(123686915406713475)
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
-wwv_flow_api.component_end;
+wwv_flow_imp.component_end;
 end;
 /
