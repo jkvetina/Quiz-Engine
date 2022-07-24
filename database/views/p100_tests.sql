@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW p100_tests AS
+CREATE OR REPLACE FORCE VIEW p100_tests AS
 SELECT
     t.test_id,
     t.test_name,
@@ -39,3 +39,6 @@ FROM (
     GROUP BY t.test_id, t.test_name, t.dedicated_to
 ) t
 ORDER BY t.dedicated_to NULLS FIRST, t.test_id;
+--
+COMMENT ON TABLE p100_tests IS '';
+

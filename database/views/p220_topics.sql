@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW p220_topics AS
+CREATE OR REPLACE FORCE VIEW p220_topics AS
 SELECT
     t.topic_id,
     --
@@ -12,4 +12,6 @@ FROM quiz_topics t
 LEFT JOIN quiz_topics_auth a
     ON a.topic_id       = t.topic_id
     AND a.user_id       = apex.get_item('$USER_ID');
+--
+COMMENT ON TABLE p220_topics IS '';
 

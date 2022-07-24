@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW p100_tests_available AS
+CREATE OR REPLACE FORCE VIEW p100_tests_available AS
 SELECT a.test_id
 FROM quiz_tests_auth a
 JOIN users u
@@ -21,3 +21,6 @@ JOIN users u
     ON u.user_id        = t.dedicated_to
     AND u.is_active     = 'Y'
 WHERE t.dedicated_to    = sess.get_user_id();
+--
+COMMENT ON TABLE p100_tests_available IS '';
+

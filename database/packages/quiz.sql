@@ -484,6 +484,7 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         l_question_id           quiz_questions.question_id%TYPE;
         l_answer_id             quiz_answers.answer_id%TYPE;
         l_search_for            CHAR;
+        l_expl_limit            PLS_INTEGER;
         --
         r_question              quiz_questions%ROWTYPE;
         r_answer                quiz_answers%ROWTYPE;
@@ -522,6 +523,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
         --
     BEGIN
         tree.log_module(in_test_id);
+        --
+        SELECT t.data_length INTO l_expl_limit
+        FROM user_tab_cols t
+        WHERE t.table_name      = 'QUIZ_QUESTIONS'
+            AND t.column_name   = 'EXPLANATION';
         --
         FOR c IN (
             SELECT t.*
@@ -562,7 +568,8 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                             INSERT INTO quiz_questions VALUES r_question;
                         EXCEPTION
                         WHEN OTHERS THEN
-                            tree.raise_error('QUESTION', r_question.question_id, r_question.question);
+                            tree.log_error('QUESTION', r_question.question_id, r_question.question);
+                            tree.raise_error('QUESTION #' || l_row);
                         END;
                         --
                         r_question.question         := '';
@@ -610,10 +617,11 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
                 --
                 IF l_search_for = 'X' THEN
                     BEGIN
-                        r_question.explanation  := LTRIM(r_question.explanation || CHR(10) || l_line, CHR(10));
+                        r_question.explanation  := SUBSTR(LTRIM(r_question.explanation || CHR(10) || l_line, CHR(10)), 1, l_expl_limit / 2);
                     EXCEPTION
                     WHEN OTHERS THEN
-                        tree.raise_error('EXPLANATION', r_question.question_id, r_question.question, LENGTH(r_question.explanation || CHR(10) || l_line));
+                        tree.log_error('EXPLANATION', r_question.question_id, r_question.question, LENGTH(r_question.explanation || CHR(10) || l_line));
+                        tree.raise_error('EXPLANATION #' || l_row);
                     END;
                 END IF;
             END LOOP;
@@ -805,3 +813,4 @@ CREATE OR REPLACE PACKAGE BODY quiz AS
 
 END;
 /
+

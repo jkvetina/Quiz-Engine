@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW p100_topics AS
+CREATE OR REPLACE FORCE VIEW p100_topics AS
 SELECT
     t.topic_id,
     t.topic_name            AS name,
@@ -26,3 +26,6 @@ JOIN (
 ) q
     ON q.test_topic         = t.topic_id
 ORDER BY 1;
+--
+COMMENT ON TABLE p100_topics IS '';
+

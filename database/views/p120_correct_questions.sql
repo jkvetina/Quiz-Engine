@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW p120_correct_questions AS
+CREATE OR REPLACE FORCE VIEW p120_correct_questions AS
 SELECT
     q.test_id,
     q.question_id,
@@ -20,4 +20,6 @@ FROM (
         OR t.test_topic     = apex.get_item('$TOPIC_ID')
     )
 ) q;
+--
+COMMENT ON TABLE p120_correct_questions IS '';
 
