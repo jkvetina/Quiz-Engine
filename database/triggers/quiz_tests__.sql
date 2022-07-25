@@ -21,10 +21,10 @@ COMPOUND TRIGGER
             DELETE FROM quiz_questions  WHERE test_id = :OLD.test_id;
         END IF;
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error('TESTS_UPSERT_FAILED');
+        app.raise_error('TESTS_UPSERT_FAILED');
     END BEFORE EACH ROW;
 
 
@@ -35,10 +35,10 @@ COMPOUND TRIGGER
             quiz.import_questions(l_test_id);
         END IF;
     EXCEPTION
-    WHEN tree.app_exception THEN
+    WHEN app.app_exception THEN
         RAISE;
     WHEN OTHERS THEN
-        tree.raise_error('TESTS_FOLLOWUP_FAILED');
+        app.raise_error('TESTS_FOLLOWUP_FAILED');
     END AFTER STATEMENT;
 
 END;
