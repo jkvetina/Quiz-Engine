@@ -6,10 +6,10 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2022.04.12'
 ,p_release=>'22.1.2'
-,p_default_workspace_id=>123132524645685789
+,p_default_workspace_id=>9014660246496943
 ,p_default_application_id=>666
 ,p_default_id_offset=>0
-,p_default_owner=>'DEV'
+,p_default_owner=>'QUIZ'
 );
 wwv_flow_imp_page.create_page(
  p_id=>100
@@ -102,7 +102,7 @@ wwv_flow_imp_page.create_page_plug(
 'FROM quiz_attempts a',
 'JOIN quiz_tests t',
 '    ON t.test_id        = a.test_id',
-'WHERE t.test_topic      = NVL(apex.get_item(''$TOPIC_ID''), t.test_topic)',
+'WHERE t.test_topic      = NVL(app.get_item(''$TOPIC_ID''), t.test_topic)',
 'GROUP BY a.user_id',
 'ORDER BY 1;',
 ''))
@@ -319,12 +319,12 @@ wwv_flow_imp_page.create_page_computation(
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT COUNT(*) AS count_',
 'FROM quiz_attempts a',
-'WHERE a.user_id         = sess.get_user_id()',
+'WHERE a.user_id         = app.get_user_id()',
 '    AND a.is_bookmarked = ''Y''',
 '    AND a.test_id       IN (',
 '        SELECT t.test_id',
 '        FROM quiz_tests t',
-'        WHERE t.test_topic      = apex.get_item(''$TOPIC_ID'')',
+'        WHERE t.test_topic      = app.get_item(''$TOPIC_ID'')',
 '            AND t.test_name     != ''BOOKMARKED''',
 '    );',
 ''))
@@ -338,7 +338,7 @@ wwv_flow_imp_page.create_page_computation(
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT t.badge_name',
 'FROM quiz_topics t',
-'WHERE t.topic_id = apex.get_item(''$TOPIC_ID'');',
+'WHERE t.topic_id = app.get_item(''$TOPIC_ID'');',
 ''))
 );
 wwv_flow_imp_page.create_page_computation(
@@ -352,7 +352,7 @@ wwv_flow_imp_page.create_page_computation(
 'FROM quiz_attempts a',
 'JOIN quiz_tests t',
 '    ON t.test_id        = a.test_id',
-'WHERE a.user_id         = sess.get_user_id();',
+'WHERE a.user_id         = app.get_user_id();',
 ''))
 ,p_compute_when=>'P100_TOPIC_ID'
 ,p_compute_when_type=>'ITEM_IS_NULL'
@@ -368,8 +368,8 @@ wwv_flow_imp_page.create_page_computation(
 'FROM quiz_attempts a',
 'JOIN quiz_tests t',
 '    ON t.test_id        = a.test_id',
-'WHERE a.user_id         = sess.get_user_id()',
-'    AND t.test_topic    = apex.get_item(''$TOPIC_ID'');',
+'WHERE a.user_id         = app.get_user_id()',
+'    AND t.test_topic    = app.get_item(''$TOPIC_ID'');',
 ''))
 );
 wwv_flow_imp_page.create_page_process(
@@ -380,8 +380,8 @@ wwv_flow_imp_page.create_page_process(
 ,p_process_name=>'CREATE_BOOKMARKED'
 ,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'quiz.create_bookmarked_test (',
-'    in_topic_id         => apex.get_item(''$TOPIC_ID''),',
-'    in_user_id          => sess.get_user_id()',
+'    in_topic_id         => app.get_item(''$TOPIC_ID''),',
+'    in_user_id          => app.get_user_id()',
 ');',
 ''))
 ,p_process_clob_language=>'PLSQL'

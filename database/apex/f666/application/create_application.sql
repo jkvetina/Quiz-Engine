@@ -6,21 +6,23 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2022.04.12'
 ,p_release=>'22.1.2'
-,p_default_workspace_id=>123132524645685789
+,p_default_workspace_id=>9014660246496943
 ,p_default_application_id=>666
 ,p_default_id_offset=>0
-,p_default_owner=>'DEV'
+,p_default_owner=>'QUIZ'
 );
 wwv_flow_imp.create_flow(
  p_id=>wwv_flow.g_flow_id
-,p_owner=>nvl(wwv_flow_application_install.get_schema,'DEV')
+,p_owner=>nvl(wwv_flow_application_install.get_schema,'QUIZ')
 ,p_name=>nvl(wwv_flow_application_install.get_application_name,'Quiz Engine')
 ,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'QUIZ')
 ,p_page_view_logging=>'NO'
 ,p_page_protection_enabled_y_n=>'Y'
 ,p_checksum_salt=>'806CB40F48CEEB979D9EA3C2682DAD665FFA2BA8FD1AFCEF83B9CDE9841889F2'
 ,p_bookmark_checksum_function=>'SH512'
-,p_compatibility_mode=>'19.2'
+,p_max_session_length_sec=>86400
+,p_max_session_idle_sec=>14400
+,p_compatibility_mode=>'21.2'
 ,p_flow_language=>'en-us'
 ,p_flow_language_derived_from=>'FLOW_PRIMARY_LANGUAGE'
 ,p_date_format=>'DS'
@@ -31,6 +33,7 @@ wwv_flow_imp.create_flow(
 ,p_documentation_banner=>'Application created from create application wizard 2021.06.13.'
 ,p_authentication=>'PLUGIN'
 ,p_authentication_id=>wwv_flow_imp.id(143713614190744339)
+,p_populate_roles=>'C'
 ,p_application_tab_set=>0
 ,p_logo_type=>'T'
 ,p_logo_text=>'&APP_NAME.'
@@ -49,7 +52,7 @@ wwv_flow_imp.create_flow(
 ,p_rejoin_existing_sessions=>'N'
 ,p_csv_encoding=>'Y'
 ,p_auto_time_zone=>'N'
-,p_error_handling_function=>'#OWNER#.tree.log_apex_error'
+,p_error_handling_function=>'core.app.handle_apex_error'
 ,p_tokenize_row_search=>'N'
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'Quiz Engine'

@@ -13,7 +13,7 @@
 // Action: NATIVE_JAVASCRIPT_CODE
 // Code
 
-apex.region('CERTIFICATIONS_TODO').refresh();
+apex.region('CERTIFICATIONS_DONE').refresh();
 
 
 // ----------------------------------------
@@ -21,6 +21,6 @@ apex.region('CERTIFICATIONS_TODO').refresh();
 // Action: NATIVE_JAVASCRIPT_CODE
 // Code
 
-apex.region('CERTIFICATIONS_DONE').refresh();
+apex.region('CERTIFICATIONS_TODO').refresh();
 
 

@@ -13,7 +13,7 @@
 -- Entry: Correct Answers (test)
 -- PL/SQL Function Body
 
-RETURN apex.get_item('$TEST_ID') IS NOT NULL AND sess.get_page_id() = 110;
+RETURN app.get_item('$TEST_ID') IS NOT NULL AND app.get_page_id() = 110;
 
 
 -- ----------------------------------------
@@ -21,6 +21,6 @@ RETURN apex.get_item('$TEST_ID') IS NOT NULL AND sess.get_page_id() = 110;
 -- Entry: Correct Answers (topic)
 -- PL/SQL Function Body
 
-RETURN apex.get_item('$TOPIC_ID') IS NOT NULL AND sess.get_page_id() = 100;
+RETURN app.get_item('$TOPIC_ID') IS NOT NULL AND app.get_page_id() = 100;
 
 

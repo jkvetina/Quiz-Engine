@@ -6,10 +6,10 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2022.04.12'
 ,p_release=>'22.1.2'
-,p_default_workspace_id=>123132524645685789
+,p_default_workspace_id=>9014660246496943
 ,p_default_application_id=>666
 ,p_default_id_offset=>0
-,p_default_owner=>'DEV'
+,p_default_owner=>'QUIZ'
 );
 wwv_flow_imp_shared.create_list(
  p_id=>wwv_flow_imp.id(123535914125712870)
@@ -31,7 +31,7 @@ wwv_flow_imp_shared.create_list_item(
 ,p_list_item_link_target=>'f?p=&APP_ID.:120:&SESSION.::&DEBUG.::::'
 ,p_list_item_disp_cond_type=>'FUNCTION_BODY'
 ,p_list_item_disp_condition=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'RETURN apex.get_item(''$TEST_ID'') IS NOT NULL AND sess.get_page_id() = 110;',
+'RETURN app.get_item(''$TEST_ID'') IS NOT NULL AND app.get_page_id() = 110;',
 ''))
 ,p_list_item_disp_condition2=>'PLSQL'
 ,p_parent_list_item_id=>wwv_flow_imp.id(123685438105713450)
@@ -44,7 +44,7 @@ wwv_flow_imp_shared.create_list_item(
 ,p_list_item_link_target=>'f?p=&APP_ID.:125:&SESSION.::&DEBUG.::P125_TOPIC_ID:&P100_TOPIC_ID.:'
 ,p_list_item_disp_cond_type=>'FUNCTION_BODY'
 ,p_list_item_disp_condition=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'RETURN apex.get_item(''$TOPIC_ID'') IS NOT NULL AND sess.get_page_id() = 100;',
+'RETURN app.get_item(''$TOPIC_ID'') IS NOT NULL AND app.get_page_id() = 100;',
 ''))
 ,p_list_item_disp_condition2=>'PLSQL'
 ,p_parent_list_item_id=>wwv_flow_imp.id(123685438105713450)

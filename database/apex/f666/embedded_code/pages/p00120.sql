@@ -19,7 +19,7 @@ BEGIN
         FROM (
             SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third
             FROM quiz_questions q
-            WHERE q.test_id         = apex.get_item('$TEST_ID')
+            WHERE q.test_id         = app.get_item('$TEST_ID')
         ) q
         WHERE q.third = 1
         ORDER BY q.question_id
@@ -30,42 +30,7 @@ BEGIN
         FOR a IN (
             SELECT a.*
             FROM quiz_answers a
-            WHERE a.test_id         = apex.get_item('$TEST_ID')
-                AND a.question_id   = q.question_id
-                AND a.is_correct    IN ('X', 'Y')
-            ORDER BY a.answer_id
-        ) LOOP
-            htp.p('<li>' || a.answer || '</li>');
-        END LOOP;
-        --
-        htp.p('</ul>');
-    END LOOP;
-END;
-
-
--- ----------------------------------------
--- Page 120: Correct Answers
--- Region: Middle
--- PL/SQL Code
-
-BEGIN
-    FOR q IN (
-        SELECT q.*
-        FROM (
-            SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third
-            FROM quiz_questions q
-            WHERE q.test_id         = apex.get_item('$TEST_ID')
-        ) q
-        WHERE q.third = 2
-        ORDER BY q.question_id
-    ) LOOP
-        htp.p('<h4>' || q.question_id || ') ' || q.question || '</h4>');
-        htp.p('<ul>');
-        --
-        FOR a IN (
-            SELECT a.*
-            FROM quiz_answers a
-            WHERE a.test_id         = apex.get_item('$TEST_ID')
+            WHERE a.test_id         = app.get_item('$TEST_ID')
                 AND a.question_id   = q.question_id
                 AND a.is_correct    IN ('X', 'Y')
             ORDER BY a.answer_id
@@ -89,7 +54,7 @@ BEGIN
         FROM (
             SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third
             FROM quiz_questions q
-            WHERE q.test_id         = apex.get_item('$TEST_ID')
+            WHERE q.test_id         = app.get_item('$TEST_ID')
         ) q
         WHERE q.third = 3
         ORDER BY q.question_id
@@ -100,7 +65,42 @@ BEGIN
         FOR a IN (
             SELECT a.*
             FROM quiz_answers a
-            WHERE a.test_id         = apex.get_item('$TEST_ID')
+            WHERE a.test_id         = app.get_item('$TEST_ID')
+                AND a.question_id   = q.question_id
+                AND a.is_correct    IN ('X', 'Y')
+            ORDER BY a.answer_id
+        ) LOOP
+            htp.p('<li>' || a.answer || '</li>');
+        END LOOP;
+        --
+        htp.p('</ul>');
+    END LOOP;
+END;
+
+
+-- ----------------------------------------
+-- Page 120: Correct Answers
+-- Region: Middle
+-- PL/SQL Code
+
+BEGIN
+    FOR q IN (
+        SELECT q.*
+        FROM (
+            SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third
+            FROM quiz_questions q
+            WHERE q.test_id         = app.get_item('$TEST_ID')
+        ) q
+        WHERE q.third = 2
+        ORDER BY q.question_id
+    ) LOOP
+        htp.p('<h4>' || q.question_id || ') ' || q.question || '</h4>');
+        htp.p('<ul>');
+        --
+        FOR a IN (
+            SELECT a.*
+            FROM quiz_answers a
+            WHERE a.test_id         = app.get_item('$TEST_ID')
                 AND a.question_id   = q.question_id
                 AND a.is_correct    IN ('X', 'Y')
             ORDER BY a.answer_id

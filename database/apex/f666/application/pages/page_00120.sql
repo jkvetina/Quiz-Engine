@@ -6,10 +6,10 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2022.04.12'
 ,p_release=>'22.1.2'
-,p_default_workspace_id=>123132524645685789
+,p_default_workspace_id=>9014660246496943
 ,p_default_application_id=>666
 ,p_default_id_offset=>0
-,p_default_owner=>'DEV'
+,p_default_owner=>'QUIZ'
 );
 wwv_flow_imp_page.create_page(
  p_id=>120
@@ -44,7 +44,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FROM (',
 '            SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third',
 '            FROM quiz_questions q',
-'            WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '        ) q',
 '        WHERE q.third = 1',
 '        ORDER BY q.question_id',
@@ -55,7 +55,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FOR a IN (',
 '            SELECT a.*',
 '            FROM quiz_answers a',
-'            WHERE a.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE a.test_id         = app.get_item(''$TEST_ID'')',
 '                AND a.question_id   = q.question_id',
 '                AND a.is_correct    IN (''X'', ''Y'')',
 '            ORDER BY a.answer_id',
@@ -87,7 +87,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FROM (',
 '            SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third',
 '            FROM quiz_questions q',
-'            WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '        ) q',
 '        WHERE q.third = 3',
 '        ORDER BY q.question_id',
@@ -98,7 +98,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FOR a IN (',
 '            SELECT a.*',
 '            FROM quiz_answers a',
-'            WHERE a.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE a.test_id         = app.get_item(''$TEST_ID'')',
 '                AND a.question_id   = q.question_id',
 '                AND a.is_correct    IN (''X'', ''Y'')',
 '            ORDER BY a.answer_id',
@@ -130,7 +130,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FROM (',
 '            SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third',
 '            FROM quiz_questions q',
-'            WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '        ) q',
 '        WHERE q.third = 2',
 '        ORDER BY q.question_id',
@@ -141,7 +141,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FOR a IN (',
 '            SELECT a.*',
 '            FROM quiz_answers a',
-'            WHERE a.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE a.test_id         = app.get_item(''$TEST_ID'')',
 '                AND a.question_id   = q.question_id',
 '                AND a.is_correct    IN (''X'', ''Y'')',
 '            ORDER BY a.answer_id',

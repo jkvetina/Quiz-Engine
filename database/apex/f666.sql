@@ -15,10 +15,10 @@ begin
 wwv_flow_imp.import_begin (
  p_version_yyyy_mm_dd=>'2022.04.12'
 ,p_release=>'22.1.2'
-,p_default_workspace_id=>123132524645685789
+,p_default_workspace_id=>9014660246496943
 ,p_default_application_id=>666
 ,p_default_id_offset=>0
-,p_default_owner=>'DEV'
+,p_default_owner=>'QUIZ'
 );
 end;
 /
@@ -28,7 +28,7 @@ prompt APPLICATION 666 - Quiz Engine
 -- Application Export:
 --   Application:     666
 --   Name:            Quiz Engine
---   Exported By:     DEV
+--   Exported By:     QUIZ
 --   Flashback:       0
 --   Export Type:     Application Export
 --     Pages:                      9
@@ -65,7 +65,7 @@ prompt APPLICATION 666 - Quiz Engine
 --       E-Mail:
 --     Supporting Objects:  Included
 --   Version:         22.1.2
---   Instance ID:     9518942539638273
+--   Instance ID:     9014305257109865
 --
 
 prompt --application/delete_application
@@ -77,14 +77,16 @@ prompt --application/create_application
 begin
 wwv_flow_imp.create_flow(
  p_id=>wwv_flow.g_flow_id
-,p_owner=>nvl(wwv_flow_application_install.get_schema,'DEV')
+,p_owner=>nvl(wwv_flow_application_install.get_schema,'QUIZ')
 ,p_name=>nvl(wwv_flow_application_install.get_application_name,'Quiz Engine')
 ,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'QUIZ')
 ,p_page_view_logging=>'NO'
 ,p_page_protection_enabled_y_n=>'Y'
 ,p_checksum_salt=>'806CB40F48CEEB979D9EA3C2682DAD665FFA2BA8FD1AFCEF83B9CDE9841889F2'
 ,p_bookmark_checksum_function=>'SH512'
-,p_compatibility_mode=>'19.2'
+,p_max_session_length_sec=>86400
+,p_max_session_idle_sec=>14400
+,p_compatibility_mode=>'21.2'
 ,p_flow_language=>'en-us'
 ,p_flow_language_derived_from=>'FLOW_PRIMARY_LANGUAGE'
 ,p_date_format=>'DS'
@@ -95,6 +97,7 @@ wwv_flow_imp.create_flow(
 ,p_documentation_banner=>'Application created from create application wizard 2021.06.13.'
 ,p_authentication=>'PLUGIN'
 ,p_authentication_id=>wwv_flow_imp.id(143713614190744339)
+,p_populate_roles=>'C'
 ,p_application_tab_set=>0
 ,p_logo_type=>'T'
 ,p_logo_text=>'&APP_NAME.'
@@ -113,7 +116,7 @@ wwv_flow_imp.create_flow(
 ,p_rejoin_existing_sessions=>'N'
 ,p_csv_encoding=>'Y'
 ,p_auto_time_zone=>'N'
-,p_error_handling_function=>'#OWNER#.tree.log_apex_error'
+,p_error_handling_function=>'core.app.handle_apex_error'
 ,p_tokenize_row_search=>'N'
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'Quiz Engine'
@@ -149,7 +152,7 @@ wwv_flow_imp_shared.create_list_item(
 ,p_list_item_link_target=>'f?p=&APP_ID.:120:&SESSION.::&DEBUG.::::'
 ,p_list_item_disp_cond_type=>'FUNCTION_BODY'
 ,p_list_item_disp_condition=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'RETURN apex.get_item(''$TEST_ID'') IS NOT NULL AND sess.get_page_id() = 110;',
+'RETURN app.get_item(''$TEST_ID'') IS NOT NULL AND app.get_page_id() = 110;',
 ''))
 ,p_list_item_disp_condition2=>'PLSQL'
 ,p_parent_list_item_id=>wwv_flow_imp.id(123685438105713450)
@@ -162,7 +165,7 @@ wwv_flow_imp_shared.create_list_item(
 ,p_list_item_link_target=>'f?p=&APP_ID.:125:&SESSION.::&DEBUG.::P125_TOPIC_ID:&P100_TOPIC_ID.:'
 ,p_list_item_disp_cond_type=>'FUNCTION_BODY'
 ,p_list_item_disp_condition=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'RETURN apex.get_item(''$TOPIC_ID'') IS NOT NULL AND sess.get_page_id() = 100;',
+'RETURN app.get_item(''$TOPIC_ID'') IS NOT NULL AND app.get_page_id() = 100;',
 ''))
 ,p_list_item_disp_condition2=>'PLSQL'
 ,p_parent_list_item_id=>wwv_flow_imp.id(123685438105713450)
@@ -350,7 +353,7 @@ wwv_flow_imp_shared.create_security_scheme(
 ,p_name=>'IS_DEVELOPER'
 ,p_scheme_type=>'NATIVE_FUNCTION_BODY'
 ,p_attribute_01=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'RETURN LOWER(sess.get_user_id()) IN (',
+'RETURN LOWER(app.get_user_id()) IN (',
 '    ''jan.kvetina@gmail.com''',
 ');'))
 ,p_error_message=>'Insufficient privileges'
@@ -396,6 +399,10 @@ end;
 /
 prompt --application/pages/page_groups
 begin
+wwv_flow_imp_page.create_page_group(
+ p_id=>wwv_flow_imp.id(11310056752247487)
+,p_group_name=>'ADMIN'
+);
 wwv_flow_imp_page.create_page_group(
  p_id=>wwv_flow_imp.id(157555888025214138)
 ,p_group_name=>'PLAN'
@@ -4391,6 +4398,7 @@ wwv_flow_imp_shared.create_plug_template(
 ,p_theme_class_id=>9
 ,p_default_label_alignment=>'RIGHT'
 ,p_default_field_alignment=>'LEFT'
+,p_translate_this_template=>'N'
 );
 wwv_flow_imp_shared.create_plug_tmpl_display_point(
  p_id=>wwv_flow_imp.id(851905803044546)
@@ -12321,7 +12329,7 @@ wwv_flow_imp_page.create_page_plug(
 'FROM quiz_attempts a',
 'JOIN quiz_tests t',
 '    ON t.test_id        = a.test_id',
-'WHERE t.test_topic      = NVL(apex.get_item(''$TOPIC_ID''), t.test_topic)',
+'WHERE t.test_topic      = NVL(app.get_item(''$TOPIC_ID''), t.test_topic)',
 'GROUP BY a.user_id',
 'ORDER BY 1;',
 ''))
@@ -12538,12 +12546,12 @@ wwv_flow_imp_page.create_page_computation(
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT COUNT(*) AS count_',
 'FROM quiz_attempts a',
-'WHERE a.user_id         = sess.get_user_id()',
+'WHERE a.user_id         = app.get_user_id()',
 '    AND a.is_bookmarked = ''Y''',
 '    AND a.test_id       IN (',
 '        SELECT t.test_id',
 '        FROM quiz_tests t',
-'        WHERE t.test_topic      = apex.get_item(''$TOPIC_ID'')',
+'        WHERE t.test_topic      = app.get_item(''$TOPIC_ID'')',
 '            AND t.test_name     != ''BOOKMARKED''',
 '    );',
 ''))
@@ -12557,7 +12565,7 @@ wwv_flow_imp_page.create_page_computation(
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT t.badge_name',
 'FROM quiz_topics t',
-'WHERE t.topic_id = apex.get_item(''$TOPIC_ID'');',
+'WHERE t.topic_id = app.get_item(''$TOPIC_ID'');',
 ''))
 );
 wwv_flow_imp_page.create_page_computation(
@@ -12571,7 +12579,7 @@ wwv_flow_imp_page.create_page_computation(
 'FROM quiz_attempts a',
 'JOIN quiz_tests t',
 '    ON t.test_id        = a.test_id',
-'WHERE a.user_id         = sess.get_user_id();',
+'WHERE a.user_id         = app.get_user_id();',
 ''))
 ,p_compute_when=>'P100_TOPIC_ID'
 ,p_compute_when_type=>'ITEM_IS_NULL'
@@ -12587,8 +12595,8 @@ wwv_flow_imp_page.create_page_computation(
 'FROM quiz_attempts a',
 'JOIN quiz_tests t',
 '    ON t.test_id        = a.test_id',
-'WHERE a.user_id         = sess.get_user_id()',
-'    AND t.test_topic    = apex.get_item(''$TOPIC_ID'');',
+'WHERE a.user_id         = app.get_user_id()',
+'    AND t.test_topic    = app.get_item(''$TOPIC_ID'');',
 ''))
 );
 wwv_flow_imp_page.create_page_process(
@@ -12599,8 +12607,8 @@ wwv_flow_imp_page.create_page_process(
 ,p_process_name=>'CREATE_BOOKMARKED'
 ,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'quiz.create_bookmarked_test (',
-'    in_topic_id         => apex.get_item(''$TOPIC_ID''),',
-'    in_user_id          => sess.get_user_id()',
+'    in_topic_id         => app.get_item(''$TOPIC_ID''),',
+'    in_user_id          => app.get_user_id()',
 ');',
 ''))
 ,p_process_clob_language=>'PLSQL'
@@ -12746,16 +12754,16 @@ wwv_flow_imp_page.create_page_plug(
 ,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
 '    q.*,',
-'    CASE WHEN q.question_id = apex.get_item(''$QUESTION_ID'')',
+'    CASE WHEN q.question_id = app.get_item(''$QUESTION_ID'')',
 '        THEN ''bold''',
 '        END AS css_class',
 'FROM quiz_questions q',
 'JOIN quiz_attempts t',
-'    ON t.user_id        = sess.get_user_id()',
+'    ON t.user_id        = app.get_user_id()',
 '    AND t.test_id       = q.test_id',
 '    AND t.question_id   = q.question_id',
 '    AND t.is_bookmarked = ''Y''',
-'WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 'ORDER BY 1, 2;',
 ''))
 ,p_lazy_loading=>false
@@ -12814,19 +12822,19 @@ wwv_flow_imp_page.create_page_plug(
 ,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
 '    q.*,',
-'    CASE WHEN q.question_id = apex.get_item(''$QUESTION_ID'')',
+'    CASE WHEN q.question_id = app.get_item(''$QUESTION_ID'')',
 '        THEN ''bold''',
 '        END AS css_class',
 'FROM quiz_questions q',
-'WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '    AND q.question_id   NOT IN (',
 '        SELECT q.question_id',
 '        FROM quiz_questions q',
 '        JOIN quiz_attempts t',
-'            ON t.user_id        = sess.get_user_id()',
+'            ON t.user_id        = app.get_user_id()',
 '            AND t.test_id       = q.test_id',
 '            AND t.question_id   = q.question_id',
-'        WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'        WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '            AND t.is_correct    = ''Y''',
 '    )',
 'ORDER BY 1, 2;',
@@ -12903,11 +12911,11 @@ wwv_flow_imp_page.create_page_plug(
 ,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
 '    q.*,',
-'    CASE WHEN q.question_id = apex.get_item(''$QUESTION_ID'')',
+'    CASE WHEN q.question_id = app.get_item(''$QUESTION_ID'')',
 '        THEN ''bold''',
 '        END AS css_class',
 'FROM quiz_questions q',
-'WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '    AND q.is_to_verify  = ''Y''',
 'ORDER BY 1, 2;',
 ''))
@@ -13158,8 +13166,8 @@ wwv_flow_imp_page.create_page_item(
 ,p_lov=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT a.answer, a.answer_id',
 'FROM quiz_answers a',
-'WHERE a.test_id = apex.get_item(''$TEST_ID'')',
-'    AND a.question_id = apex.get_item(''$QUESTION_ID'')',
+'WHERE a.test_id = app.get_item(''$TEST_ID'')',
+'    AND a.question_id = app.get_item(''$QUESTION_ID'')',
 'ORDER BY DBMS_RANDOM.VALUE();',
 ''))
 ,p_field_template=>wwv_flow_imp.id(123651838042713193)
@@ -13336,15 +13344,15 @@ wwv_flow_imp_page.create_page_computation(
 ,p_computation_type=>'QUERY'
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
-'    apex.get_item(''$PROGRESS_PERC'') || ''% done, '' ||',
-'    (100 - apex.get_item(''$BOOKMARKED_PERC'')) || ''% correct'' ||',
+'    app.get_item(''$PROGRESS_PERC'') || ''% done, '' ||',
+'    (100 - app.get_item(''$BOOKMARKED_PERC'')) || ''% correct'' ||',
 '    CASE',
-'        WHEN (100 - apex.get_item(''$BOOKMARKED_PERC'')) > c.pass_ratio THEN '' = PASS''',
+'        WHEN (100 - app.get_item(''$BOOKMARKED_PERC'')) > c.pass_ratio THEN '' = PASS''',
 '        WHEN c.pass_ratio IS NOT NULL THEN '' = FAIL''',
 '        END AS result_',
 'FROM DUAL',
 'LEFT JOIN plan_certifications c',
-'    ON c.path_id = apex.get_item(''$TOPIC_ID'');',
+'    ON c.path_id = app.get_item(''$TOPIC_ID'');',
 ''))
 );
 wwv_flow_imp_page.create_page_da_event(
@@ -13495,7 +13503,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FROM (',
 '            SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third',
 '            FROM quiz_questions q',
-'            WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '        ) q',
 '        WHERE q.third = 1',
 '        ORDER BY q.question_id',
@@ -13506,7 +13514,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FOR a IN (',
 '            SELECT a.*',
 '            FROM quiz_answers a',
-'            WHERE a.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE a.test_id         = app.get_item(''$TEST_ID'')',
 '                AND a.question_id   = q.question_id',
 '                AND a.is_correct    IN (''X'', ''Y'')',
 '            ORDER BY a.answer_id',
@@ -13538,7 +13546,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FROM (',
 '            SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third',
 '            FROM quiz_questions q',
-'            WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '        ) q',
 '        WHERE q.third = 3',
 '        ORDER BY q.question_id',
@@ -13549,7 +13557,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FOR a IN (',
 '            SELECT a.*',
 '            FROM quiz_answers a',
-'            WHERE a.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE a.test_id         = app.get_item(''$TEST_ID'')',
 '                AND a.question_id   = q.question_id',
 '                AND a.is_correct    IN (''X'', ''Y'')',
 '            ORDER BY a.answer_id',
@@ -13581,7 +13589,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FROM (',
 '            SELECT q.*, NTILE(3) OVER (ORDER BY q.question_id) AS third',
 '            FROM quiz_questions q',
-'            WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '        ) q',
 '        WHERE q.third = 2',
 '        ORDER BY q.question_id',
@@ -13592,7 +13600,7 @@ wwv_flow_imp_page.create_page_plug(
 '        FOR a IN (',
 '            SELECT a.*',
 '            FROM quiz_answers a',
-'            WHERE a.test_id         = apex.get_item(''$TEST_ID'')',
+'            WHERE a.test_id         = app.get_item(''$TEST_ID'')',
 '                AND a.question_id   = q.question_id',
 '                AND a.is_correct    IN (''X'', ''Y'')',
 '            ORDER BY a.answer_id',
@@ -13879,8 +13887,8 @@ wwv_flow_imp_page.create_page_plug(
 ,p_query_type=>'TABLE'
 ,p_query_table=>'QUIZ_QUESTIONS'
 ,p_query_where=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'test_id = COALESCE(TO_NUMBER(apex.get_item(''$TEST_ID'')), test_id)',
-'AND question_id = COALESCE(TO_NUMBER(apex.get_item(''$QUESTION_ID'')), question_id)',
+'test_id = COALESCE(TO_NUMBER(app.get_item(''$TEST_ID'')), test_id)',
+'AND question_id = COALESCE(TO_NUMBER(app.get_item(''$QUESTION_ID'')), question_id)',
 ''))
 ,p_include_rowid_column=>true
 ,p_plug_source_type=>'NATIVE_IG'
@@ -14159,8 +14167,8 @@ wwv_flow_imp_page.create_page_plug(
 ,p_query_type=>'TABLE'
 ,p_query_table=>'QUIZ_ANSWERS'
 ,p_query_where=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'test_id = COALESCE(TO_NUMBER(apex.get_item(''$TEST_ID'')), test_id)',
-'AND question_id = COALESCE(TO_NUMBER(apex.get_item(''$QUESTION_ID'')), question_id)',
+'test_id = COALESCE(TO_NUMBER(app.get_item(''$TEST_ID'')), test_id)',
+'AND question_id = COALESCE(TO_NUMBER(app.get_item(''$QUESTION_ID'')), question_id)',
 ''))
 ,p_include_rowid_column=>true
 ,p_plug_source_type=>'NATIVE_IG'
@@ -14578,23 +14586,22 @@ wwv_flow_imp_page.create_page_process(
 'FOR c IN (',
 '    SELECT MIN(q.question_id) AS next_id',
 '    FROM quiz_questions q',
-'    WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
-'        AND q.question_id   > apex.get_item(''$QUESTION_ID'')',
+'    WHERE q.test_id         = app.get_item(''$TEST_ID'')',
+'        AND q.question_id   > app.get_item(''$QUESTION_ID'')',
 ') LOOP',
-'    apex.set_item(''$NEXT_ID'', c.next_id);',
+'    app.set_item(''$NEXT_ID'', c.next_id);',
 'END LOOP;',
 '--',
 'FOR c IN (',
 '    SELECT MAX(q.question_id) AS prev_id',
 '    FROM quiz_questions q',
-'    WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
-'        AND q.question_id   < apex.get_item(''$QUESTION_ID'')',
+'    WHERE q.test_id         = app.get_item(''$TEST_ID'')',
+'        AND q.question_id   < app.get_item(''$QUESTION_ID'')',
 ') LOOP',
-'    apex.set_item(''$PREV_ID'', c.prev_id);',
+'    app.set_item(''$PREV_ID'', c.prev_id);',
 'END LOOP;',
 ''))
 ,p_process_clob_language=>'PLSQL'
-,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 );
 end;
 /
@@ -15681,7 +15688,7 @@ wwv_flow_imp_page.create_page(
 ,p_alias=>'ROADMAP'
 ,p_step_title=>'Roadmap'
 ,p_autocomplete_on_off=>'OFF'
-,p_group_id=>wwv_flow_imp.id(157555888025214138)
+,p_group_id=>wwv_flow_imp.id(11310056752247487)
 ,p_page_template_options=>'#DEFAULT#'
 ,p_page_component_map=>'21'
 ,p_last_updated_by=>'DEV'

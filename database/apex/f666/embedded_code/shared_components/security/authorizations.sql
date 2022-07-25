@@ -13,7 +13,7 @@
 -- Authorization: IS_DEVELOPER
 -- PL/SQL Function Body
 
-RETURN LOWER(sess.get_user_id()) IN (
+RETURN LOWER(app.get_user_id()) IN (
     'jan.kvetina@gmail.com'
 );
 

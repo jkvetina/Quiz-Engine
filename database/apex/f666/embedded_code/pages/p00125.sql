@@ -40,14 +40,14 @@ END;
 
 -- ----------------------------------------
 -- Page 125: Correct Answers (for topic)
--- Region: Middle
+-- Region: Right
 -- PL/SQL Code
 
 BEGIN
     FOR q IN (
         SELECT q.*
         FROM p120_correct_questions q
-        WHERE q.third = 2
+        WHERE q.third = 3
         ORDER BY q.test_id, q.question_id
     ) LOOP
         htp.p('<h4>' || q.question_id || ') ' || q.question || '</h4>');
@@ -70,14 +70,14 @@ END;
 
 -- ----------------------------------------
 -- Page 125: Correct Answers (for topic)
--- Region: Right
+-- Region: Middle
 -- PL/SQL Code
 
 BEGIN
     FOR q IN (
         SELECT q.*
         FROM p120_correct_questions q
-        WHERE q.third = 3
+        WHERE q.third = 2
         ORDER BY q.test_id, q.question_id
     ) LOOP
         htp.p('<h4>' || q.question_id || ') ' || q.question || '</h4>');

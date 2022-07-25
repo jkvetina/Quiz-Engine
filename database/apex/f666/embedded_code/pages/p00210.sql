@@ -16,19 +16,19 @@
 FOR c IN (
     SELECT MIN(q.question_id) AS next_id
     FROM quiz_questions q
-    WHERE q.test_id         = apex.get_item('$TEST_ID')
-        AND q.question_id   > apex.get_item('$QUESTION_ID')
+    WHERE q.test_id         = app.get_item('$TEST_ID')
+        AND q.question_id   > app.get_item('$QUESTION_ID')
 ) LOOP
-    apex.set_item('$NEXT_ID', c.next_id);
+    app.set_item('$NEXT_ID', c.next_id);
 END LOOP;
 --
 FOR c IN (
     SELECT MAX(q.question_id) AS prev_id
     FROM quiz_questions q
-    WHERE q.test_id         = apex.get_item('$TEST_ID')
-        AND q.question_id   < apex.get_item('$QUESTION_ID')
+    WHERE q.test_id         = app.get_item('$TEST_ID')
+        AND q.question_id   < app.get_item('$QUESTION_ID')
 ) LOOP
-    apex.set_item('$PREV_ID', c.prev_id);
+    app.set_item('$PREV_ID', c.prev_id);
 END LOOP;
 
 

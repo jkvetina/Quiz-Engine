@@ -21,7 +21,7 @@ SELECT
 FROM quiz_attempts a
 JOIN quiz_tests t
     ON t.test_id        = a.test_id
-WHERE t.test_topic      = NVL(apex.get_item('$TOPIC_ID'), t.test_topic)
+WHERE t.test_topic      = NVL(app.get_item('$TOPIC_ID'), t.test_topic)
 GROUP BY a.user_id
 ORDER BY 1;
 
@@ -32,8 +32,8 @@ ORDER BY 1;
 -- PL/SQL Code
 
 quiz.create_bookmarked_test (
-    in_topic_id         => apex.get_item('$TOPIC_ID'),
-    in_user_id          => sess.get_user_id()
+    in_topic_id         => app.get_item('$TOPIC_ID'),
+    in_user_id          => app.get_user_id()
 );
 
 
@@ -46,7 +46,7 @@ SELECT MIN(t.test_topic) KEEP (DENSE_RANK FIRST ORDER BY a.updated_at DESC) AS l
 FROM quiz_attempts a
 JOIN quiz_tests t
     ON t.test_id        = a.test_id
-WHERE a.user_id         = sess.get_user_id();
+WHERE a.user_id         = app.get_user_id();
 
 
 -- ----------------------------------------
@@ -56,7 +56,7 @@ WHERE a.user_id         = sess.get_user_id();
 
 SELECT t.badge_name
 FROM quiz_topics t
-WHERE t.topic_id = apex.get_item('$TOPIC_ID');
+WHERE t.topic_id = app.get_item('$TOPIC_ID');
 
 
 -- ----------------------------------------
@@ -68,8 +68,8 @@ SELECT MIN(a.test_id) KEEP (DENSE_RANK FIRST ORDER BY a.updated_at DESC) AS last
 FROM quiz_attempts a
 JOIN quiz_tests t
     ON t.test_id        = a.test_id
-WHERE a.user_id         = sess.get_user_id()
-    AND t.test_topic    = apex.get_item('$TOPIC_ID');
+WHERE a.user_id         = app.get_user_id()
+    AND t.test_topic    = app.get_item('$TOPIC_ID');
 
 
 -- ----------------------------------------
@@ -79,12 +79,12 @@ WHERE a.user_id         = sess.get_user_id()
 
 SELECT COUNT(*) AS count_
 FROM quiz_attempts a
-WHERE a.user_id         = sess.get_user_id()
+WHERE a.user_id         = app.get_user_id()
     AND a.is_bookmarked = 'Y'
     AND a.test_id       IN (
         SELECT t.test_id
         FROM quiz_tests t
-        WHERE t.test_topic      = apex.get_item('$TOPIC_ID')
+        WHERE t.test_topic      = app.get_item('$TOPIC_ID')
             AND t.test_name     != 'BOOKMARKED'
     );
 

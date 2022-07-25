@@ -6,10 +6,10 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2022.04.12'
 ,p_release=>'22.1.2'
-,p_default_workspace_id=>123132524645685789
+,p_default_workspace_id=>9014660246496943
 ,p_default_application_id=>666
 ,p_default_id_offset=>0
-,p_default_owner=>'DEV'
+,p_default_owner=>'QUIZ'
 );
 wwv_flow_imp_page.create_page(
  p_id=>110
@@ -136,16 +136,16 @@ wwv_flow_imp_page.create_page_plug(
 ,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
 '    q.*,',
-'    CASE WHEN q.question_id = apex.get_item(''$QUESTION_ID'')',
+'    CASE WHEN q.question_id = app.get_item(''$QUESTION_ID'')',
 '        THEN ''bold''',
 '        END AS css_class',
 'FROM quiz_questions q',
 'JOIN quiz_attempts t',
-'    ON t.user_id        = sess.get_user_id()',
+'    ON t.user_id        = app.get_user_id()',
 '    AND t.test_id       = q.test_id',
 '    AND t.question_id   = q.question_id',
 '    AND t.is_bookmarked = ''Y''',
-'WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 'ORDER BY 1, 2;',
 ''))
 ,p_lazy_loading=>false
@@ -204,19 +204,19 @@ wwv_flow_imp_page.create_page_plug(
 ,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
 '    q.*,',
-'    CASE WHEN q.question_id = apex.get_item(''$QUESTION_ID'')',
+'    CASE WHEN q.question_id = app.get_item(''$QUESTION_ID'')',
 '        THEN ''bold''',
 '        END AS css_class',
 'FROM quiz_questions q',
-'WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '    AND q.question_id   NOT IN (',
 '        SELECT q.question_id',
 '        FROM quiz_questions q',
 '        JOIN quiz_attempts t',
-'            ON t.user_id        = sess.get_user_id()',
+'            ON t.user_id        = app.get_user_id()',
 '            AND t.test_id       = q.test_id',
 '            AND t.question_id   = q.question_id',
-'        WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'        WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '            AND t.is_correct    = ''Y''',
 '    )',
 'ORDER BY 1, 2;',
@@ -293,11 +293,11 @@ wwv_flow_imp_page.create_page_plug(
 ,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
 '    q.*,',
-'    CASE WHEN q.question_id = apex.get_item(''$QUESTION_ID'')',
+'    CASE WHEN q.question_id = app.get_item(''$QUESTION_ID'')',
 '        THEN ''bold''',
 '        END AS css_class',
 'FROM quiz_questions q',
-'WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
+'WHERE q.test_id         = app.get_item(''$TEST_ID'')',
 '    AND q.is_to_verify  = ''Y''',
 'ORDER BY 1, 2;',
 ''))
@@ -548,8 +548,8 @@ wwv_flow_imp_page.create_page_item(
 ,p_lov=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT a.answer, a.answer_id',
 'FROM quiz_answers a',
-'WHERE a.test_id = apex.get_item(''$TEST_ID'')',
-'    AND a.question_id = apex.get_item(''$QUESTION_ID'')',
+'WHERE a.test_id = app.get_item(''$TEST_ID'')',
+'    AND a.question_id = app.get_item(''$QUESTION_ID'')',
 'ORDER BY DBMS_RANDOM.VALUE();',
 ''))
 ,p_field_template=>wwv_flow_imp.id(123651838042713193)
@@ -726,15 +726,15 @@ wwv_flow_imp_page.create_page_computation(
 ,p_computation_type=>'QUERY'
 ,p_computation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT',
-'    apex.get_item(''$PROGRESS_PERC'') || ''% done, '' ||',
-'    (100 - apex.get_item(''$BOOKMARKED_PERC'')) || ''% correct'' ||',
+'    app.get_item(''$PROGRESS_PERC'') || ''% done, '' ||',
+'    (100 - app.get_item(''$BOOKMARKED_PERC'')) || ''% correct'' ||',
 '    CASE',
-'        WHEN (100 - apex.get_item(''$BOOKMARKED_PERC'')) > c.pass_ratio THEN '' = PASS''',
+'        WHEN (100 - app.get_item(''$BOOKMARKED_PERC'')) > c.pass_ratio THEN '' = PASS''',
 '        WHEN c.pass_ratio IS NOT NULL THEN '' = FAIL''',
 '        END AS result_',
 'FROM DUAL',
 'LEFT JOIN plan_certifications c',
-'    ON c.path_id = apex.get_item(''$TOPIC_ID'');',
+'    ON c.path_id = app.get_item(''$TOPIC_ID'');',
 ''))
 );
 wwv_flow_imp_page.create_page_da_event(

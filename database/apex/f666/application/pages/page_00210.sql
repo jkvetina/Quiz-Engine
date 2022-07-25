@@ -6,10 +6,10 @@ begin
 wwv_flow_imp.component_begin (
  p_version_yyyy_mm_dd=>'2022.04.12'
 ,p_release=>'22.1.2'
-,p_default_workspace_id=>123132524645685789
+,p_default_workspace_id=>9014660246496943
 ,p_default_application_id=>666
 ,p_default_id_offset=>0
-,p_default_owner=>'DEV'
+,p_default_owner=>'QUIZ'
 );
 wwv_flow_imp_page.create_page(
  p_id=>210
@@ -45,8 +45,8 @@ wwv_flow_imp_page.create_page_plug(
 ,p_query_type=>'TABLE'
 ,p_query_table=>'QUIZ_QUESTIONS'
 ,p_query_where=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'test_id = COALESCE(TO_NUMBER(apex.get_item(''$TEST_ID'')), test_id)',
-'AND question_id = COALESCE(TO_NUMBER(apex.get_item(''$QUESTION_ID'')), question_id)',
+'test_id = COALESCE(TO_NUMBER(app.get_item(''$TEST_ID'')), test_id)',
+'AND question_id = COALESCE(TO_NUMBER(app.get_item(''$QUESTION_ID'')), question_id)',
 ''))
 ,p_include_rowid_column=>true
 ,p_plug_source_type=>'NATIVE_IG'
@@ -325,8 +325,8 @@ wwv_flow_imp_page.create_page_plug(
 ,p_query_type=>'TABLE'
 ,p_query_table=>'QUIZ_ANSWERS'
 ,p_query_where=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'test_id = COALESCE(TO_NUMBER(apex.get_item(''$TEST_ID'')), test_id)',
-'AND question_id = COALESCE(TO_NUMBER(apex.get_item(''$QUESTION_ID'')), question_id)',
+'test_id = COALESCE(TO_NUMBER(app.get_item(''$TEST_ID'')), test_id)',
+'AND question_id = COALESCE(TO_NUMBER(app.get_item(''$QUESTION_ID'')), question_id)',
 ''))
 ,p_include_rowid_column=>true
 ,p_plug_source_type=>'NATIVE_IG'
@@ -744,23 +744,22 @@ wwv_flow_imp_page.create_page_process(
 'FOR c IN (',
 '    SELECT MIN(q.question_id) AS next_id',
 '    FROM quiz_questions q',
-'    WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
-'        AND q.question_id   > apex.get_item(''$QUESTION_ID'')',
+'    WHERE q.test_id         = app.get_item(''$TEST_ID'')',
+'        AND q.question_id   > app.get_item(''$QUESTION_ID'')',
 ') LOOP',
-'    apex.set_item(''$NEXT_ID'', c.next_id);',
+'    app.set_item(''$NEXT_ID'', c.next_id);',
 'END LOOP;',
 '--',
 'FOR c IN (',
 '    SELECT MAX(q.question_id) AS prev_id',
 '    FROM quiz_questions q',
-'    WHERE q.test_id         = apex.get_item(''$TEST_ID'')',
-'        AND q.question_id   < apex.get_item(''$QUESTION_ID'')',
+'    WHERE q.test_id         = app.get_item(''$TEST_ID'')',
+'        AND q.question_id   < app.get_item(''$QUESTION_ID'')',
 ') LOOP',
-'    apex.set_item(''$PREV_ID'', c.prev_id);',
+'    app.set_item(''$PREV_ID'', c.prev_id);',
 'END LOOP;',
 ''))
 ,p_process_clob_language=>'PLSQL'
-,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 );
 wwv_flow_imp.component_end;
 end;
