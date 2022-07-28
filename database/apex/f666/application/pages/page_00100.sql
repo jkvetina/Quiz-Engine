@@ -109,7 +109,7 @@ wwv_flow_imp_page.create_page_plug(
 ,p_plug_source_type=>'NATIVE_JQM_LIST_VIEW'
 ,p_plug_query_num_rows=>15
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
-,p_plug_required_role=>wwv_flow_imp.id(123678145775713360)
+,p_plug_required_role=>wwv_flow_imp.id(123678145775713360)  -- IS_DEVELOPER
 ,p_attribute_02=>'NAME'
 ,p_attribute_06=>'SUPPLEMENT'
 ,p_attribute_08=>'COUNTER'

@@ -64,7 +64,7 @@ wwv_flow_imp_shared.create_list_item(
 ,p_list_item_link_text=>'Assign Access'
 ,p_list_item_link_target=>'f?p=&APP_ID.:220:&SESSION.::&DEBUG.::::'
 ,p_list_item_icon=>'fa-lock-user'
-,p_security_scheme=>wwv_flow_imp.id(123678145775713360)
+,p_security_scheme=>wwv_flow_imp.id(123678145775713360)  -- IS_DEVELOPER
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
 wwv_flow_imp.component_end;
